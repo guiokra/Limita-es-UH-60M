@@ -151,27 +151,27 @@
 
         td, th {
             border: 1px solid var(--border-color);
-            padding: 10px;
+            padding: 8px 6px;
             text-align: left;
+            font-size: 0.85rem;
         }
 
         th {
             background-color: #212529;
             color: #fff;
             font-weight: 600;
-            font-size: 0.9rem;
         }
 
         input[type="text"], input[type="number"] {
             background-color: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--primary);
-            padding: 4px 8px;
+            padding: 4px;
             border-radius: 4px;
-            font-size: 16px; /* Prevent iOS zoom */
-            width: 70px;
+            font-size: 14px; /* Prevent iOS zoom */
+            width: 55px; /* Reduced to fit more content */
             text-align: center;
-            margin: 0 4px;
+            margin: 2px 1px;
             font-weight: bold;
             outline: none;
             transition: border-color 0.2s;
@@ -559,7 +559,7 @@
             {
                 section: "STARTER E APU",
                 items: [
-                    { title: "STARTER", content: `<table><tr><th>Temp</th><th>Ciclo</th></tr><tr><td>&le; <input type="number" id="lim_start_temp_low">ºC</td><td><input type="number" id="lim_start_p1_a"> Part, <input type="number" id="lim_start_p1_rest">m desc, <input type="number" id="lim_start_p1_b"> Part</td></tr><tr><td><input type="number" id="lim_start_temp_high_low"> - <input type="number" id="lim_start_temp_high_high">ºC</td><td><input type="number" id="lim_start_p2"> Partidas</td></tr><tr><td>Adicionais</td><td><input type="number" id="lim_start_add_rest">m descanso</td></tr><tr><td>Ciclos</td><td><input type="number" id="lim_start_cycle_rest"> min intervalo</td></tr></table>` },
+                    { title: "STARTER", content: `<table><tr><th>Temp</th><th>Ciclo</th></tr><tr><td>&le; <input type="number" id="lim_start_temp_low"> ºC</td><td><input type="number" id="lim_start_p1_a"> Partidas, <br><input type="number" id="lim_start_p1_rest"> minutos descanso, <br><input type="number" id="lim_start_p1_b"> Partidas</td></tr><tr><td><input type="number" id="lim_start_temp_high_low"> - <input type="number" id="lim_start_temp_high_high"> ºC</td><td><input type="number" id="lim_start_p2"> Partidas</td></tr><tr><td>Partidas adicionais</td><td><input type="number" id="lim_start_add_rest"> minutos descanso</td></tr><tr><td>Tempo entre ciclos de partida</td><td><input type="number" id="lim_start_cycle_rest"> minutos intervalo</td></tr></table>` },
                     { title: "APU", content: `<table><tr><th>Condição</th><th>Tempo Máximo</th></tr><tr><td>&ge; <input type="number" id="lim_apu_on_temp">ºC (Rotor e motor ligados)</td><td><input type="number" id="lim_apu_on_time"> min</td></tr><tr><td>&le; <input type="number" id="lim_apu_off_temp">ºC (Rotor e motor desligados)</td><td>Sem limite</td></tr><tr><td>APU OIL HOT acesa</td><td><input type="number" id="lim_apu_oil_hot"> min</td></tr></table>` }
                 ]
             },
@@ -567,14 +567,14 @@
                 section: "LIMITES DE ROTOR E BANK",
                 items: [
                     { title: "NR COM POTÊNCIA", content: `<table><tr><th>Faixa</th><th>Valor (%)</th></tr><tr><td>Trans 1</td><td><input type="number" id="lim_nr_pot_trans1_low"> - <input type="number" id="lim_nr_pot_trans1_high"></td></tr><tr><td>Contínuo</td><td><input type="number" id="lim_nr_pot_cont_low"> - <input type="number" id="lim_nr_pot_cont_high"></td></tr><tr><td>Trans 2</td><td><input type="number" id="lim_nr_pot_trans2_low"> - <input type="number" id="lim_nr_pot_trans2_high"></td></tr></table>` },
-                    { title: "NR EM AUTORROTAÇÃO", content: `<table><tr><th>Faixa</th><th>Valor (%)</th></tr><tr><td>120%</td><td>Só <input type="text" id="lim_nr_auto_mtf_txt" value="MTF" readonly style="width: 40px; border:none; background:transparent; color: #D4AF37;"></td></tr><tr><td>Máximo</td><td><input type="number" id="lim_nr_auto_max"></td></tr><tr><td>Transiente</td><td><input type="number" id="lim_nr_auto_trans_low"> - <input type="number" id="lim_nr_auto_trans_high"></td></tr><tr><td>Normal</td><td><input type="number" id="lim_nr_auto_norm_low"> - <input type="number" id="lim_nr_auto_norm_high"></td></tr></table>` },
+                    { title: "NR EM AUTORROTAÇÃO", content: `<table><tr><th>Faixa</th><th>Valor (%)</th></tr><tr><td>120%</td><td>Só <input type="text" id="lim_nr_auto_mtf_txt" value="MTF" readonly style="width: 40px; border:none; background:transparent; color: var(--muted);"></td></tr><tr><td>Máximo</td><td><input type="number" id="lim_nr_auto_max"></td></tr><tr><td>Transiente</td><td><input type="number" id="lim_nr_auto_trans_low"> - <input type="number" id="lim_nr_auto_trans_high"></td></tr><tr><td>Normal</td><td><input type="number" id="lim_nr_auto_norm_low"> - <input type="number" id="lim_nr_auto_norm_high"></td></tr></table>` },
                     { title: "LIMITES DE BANK", content: `<table><tr><td>Máx Roll</td><td><input type="number" id="lim_bank_roll">º</td></tr><tr><td>Máx Pitch</td><td><input type="number" id="lim_bank_pitch">º</td></tr><tr><td>PRI SERVO PRESS</td><td><input type="number" id="lim_bank_servo">º</td></tr></table>` }
                 ]
             },
             {
                 section: "VELOCIDADES MÁXIMAS",
                 items: [
-                    { title: "VELOCIDADES MÁXIMAS", content: `<table><tr><td>VNE</td><td><input type="number" id="lim_vne"> KIAS</td></tr><tr><td>Farol ext</td><td><input type="number" id="lim_v_farol_ext"> KIAS</td></tr><tr><td>Estender Farol Pouso</td><td><input type="number" id="lim_v_farol_pouso_ext"> KIAS</td></tr><tr><td>Estender Farol Busca</td><td><input type="number" id="lim_v_farol_busca_ext"> KIAS</td></tr><tr><td>Janela MV aberta</td><td><input type="number" id="lim_v_janela"> KIAS</td></tr><tr><td>Porta Cabine Aberta</td><td><input type="number" id="lim_v_porta_aberta"> KIAS</td></tr><tr><td>Abertura Porta em Voo</td><td><input type="number" id="lim_v_porta_voo"> KIAS</td></tr><tr><td>1 HYD / 1 SAS Inop</td><td><input type="number" id="lim_v_1hyd"> KIAS</td></tr><tr><td>2 HYD / 2 SAS Inop</td><td><input type="number" id="lim_v_2hyd"> KIAS</td></tr><tr><td>2 HYD / 2 SAS (IMC)</td><td><input type="number" id="lim_v_2hyd_imc"> KIAS</td></tr><tr><td>Auto &lt; 16825lb</td><td><input type="number" id="lim_v_auto_low"> KIAS</td></tr><tr><td>Auto &ge; 16825lb</td><td><input type="number" id="lim_v_auto_high"> KIAS</td></tr><tr><td>Dist. Máx Auto (Clean)</td><td><input type="number" id="lim_v_auto_dist"> KIAS</td></tr><tr><td>Auto pane STAB</td><td><input type="number" id="lim_v_auto_stab"> KIAS</td></tr><tr><td>Carga ext &lt; 8000lb</td><td><input type="number" id="lim_v_load_low"> KIAS</td></tr><tr><td>Carga ext &gt; 8000lb</td><td><input type="number" id="lim_v_load_high"> KIAS</td></tr><tr><td>1 Eng Inop</td><td><input type="number" id="lim_v_1eng"> KIAS</td></tr><tr><td>Pouso Corrido</td><td><input type="number" id="lim_v_corrido"> KTS</td></tr><tr><td>Vento (Inic/Corte)</td><td><input type="number" id="lim_v_wind_rotor"> KTS</td></tr><tr><td>Vento Lat/Retaguarda</td><td><input type="number" id="lim_v_wind_lat"> KTS</td></tr></table>` }
+                    { title: "VELOCIDADES MÁXIMAS", content: `<table><tr><td>VNE</td><td><input type="number" id="lim_vne"> KIAS</td></tr><tr><td>Farol ext</td><td><input type="number" id="lim_v_farol_ext"> KIAS</td></tr><tr><td>Estender Farol Pouso</td><td><input type="number" id="lim_v_farol_pouso_ext"> KIAS</td></tr><tr><td>Estender Farol Busca</td><td><input type="number" id="lim_v_farol_busca_ext"> KIAS</td></tr><tr><td>Janela MV aberta</td><td><input type="number" id="lim_v_janela"> KIAS</td></tr><tr><td>Porta Cabine Aberta</td><td><input type="number" id="lim_v_porta_aberta"> KIAS</td></tr><tr><td>Abertura Porta em Voo</td><td><input type="number" id="lim_v_porta_voo"> KIAS</td></tr><tr><td>1 HYD / 1 SAS Inop</td><td><input type="number" id="lim_v_1hyd"> KIAS</td></tr><tr><td>2 HYD / 2 SAS Inop</td><td><input type="number" id="lim_v_2hyd"> KIAS</td></tr><tr><td>2 HYD / 2 SAS (IMC)</td><td><input type="number" id="lim_v_2hyd_imc"> KIAS</td></tr><tr><td>Auto &lt; 16825lb</td><td><input type="number" id="lim_v_auto_low"> KIAS</td></tr><tr><td>Auto &ge; 16825lb</td><td><input type="number" id="lim_v_auto_high"> KIAS</td></tr><tr><td>Dist. Máx Auto (Clean)</td><td><input type="number" id="lim_v_auto_dist"> KIAS</td></tr><tr><td>Auto pane STAB</td><td><input type="number" id="lim_v_auto_stab"> KIAS</td></tr><tr><td>Carga ext &lt; 8000lb</td><td><input type="number" id="lim_v_load_low"> KIAS</td></tr><tr><td>Carga ext &gt; 8000lb</td><td><input type="number" id="lim_v_load_high"> KIAS</td></tr><tr><td>1 Eng Inop</td><td><input type="number" id="lim_v_1eng"> KIAS</td></tr><tr><td>Pouso Corrido</td><td><input type="number" id="lim_v_corrido"> GS</td></tr><tr><td>Vento (Inic/Corte)</td><td><input type="number" id="lim_v_wind_rotor"> KT</td></tr><tr><td>Vento Lat/Retaguarda</td><td><input type="number" id="lim_v_wind_lat"> KT</td></tr></table>` }
                 ]
             },
             {
