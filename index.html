@@ -298,6 +298,44 @@
             .header { padding: 15px 10px; }
             .header-content { flex-direction: column; text-align: center; padding: 0; gap: 10px; }
             .progress-container { width: 100%; max-width: none; }
+            .btn-back { display: none !important; }
+
+            .btn-floating-exit {
+                position: fixed;
+                top: 20px;
+                left: 20px;
+                z-index: 2000;
+                padding: 10px 18px;
+                border-radius: 50px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+                background-color: rgba(30,32,35,0.95);
+                border: 1px solid var(--primary);
+                color: var(--primary);
+                font-size: 0.85rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                opacity: 0;
+                pointer-events: none;
+                transform: translateY(-20px);
+                cursor: pointer;
+                backdrop-filter: blur(8px);
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .btn-floating-exit.visible {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(0);
+            }
+
+            .btn-floating-exit:active {
+                transform: scale(0.95);
+            }
+
             .title-area h1 { font-size: 1.1rem; }
             .btn-section-correct { margin-bottom: 15px; font-size: 0.7rem; }
         }
@@ -387,7 +425,10 @@
         }
     </style>
 </head>
-<body>
+<body onscroll="handleScroll()">
+    <button class="btn-floating-exit" id="btnFloatingExit" onclick="goToHome()">
+        <span>←</span> SAIR
+    </button>
 
     <div class="header" id="mainHeader">
         <div class="header-content">
@@ -457,11 +498,8 @@
                     </div>
                     <div class="feedback-area" id="testFeedback"></div>
                 </div>
-                <div class="test-nav">
+                <div class="test-nav" style="margin-bottom: 20px;">
                     <button class="btn" id="btnNext" onclick="handleQuestionSubmit()">Confirmar</button>
-                </div>
-                <div style="margin-top: 50px; text-align: center; margin-bottom: 40px;">
-                    <button class="btn btn-secondary" onclick="goToHome()" style="font-size: 0.7rem; border: none; opacity: 0.7;">Encerrar e Voltar</button>
                 </div>
             </div>
         </div>
@@ -567,7 +605,7 @@
                 section: "LIMITES DE ROTOR E BANK",
                 items: [
                     { title: "NR COM POTÊNCIA", content: `<table><tr><th>Faixa</th><th>Valor (%)</th></tr><tr><td>Trans 1</td><td><input type="number" id="lim_nr_pot_trans1_low"> - <input type="number" id="lim_nr_pot_trans1_high"></td></tr><tr><td>Contínuo</td><td><input type="number" id="lim_nr_pot_cont_low"> - <input type="number" id="lim_nr_pot_cont_high"></td></tr><tr><td>Trans 2</td><td><input type="number" id="lim_nr_pot_trans2_low"> - <input type="number" id="lim_nr_pot_trans2_high"></td></tr></table>` },
-                    { title: "NR EM AUTORROTAÇÃO", content: `<table><tr><th>Faixa</th><th>Valor (%)</th></tr><tr><td>120%</td><td>Só <input type="text" id="lim_nr_auto_mtf_txt" value="MTF" readonly style="width: 40px; border:none; background:transparent; color: var(--muted);"></td></tr><tr><td>Máximo</td><td><input type="number" id="lim_nr_auto_max"></td></tr><tr><td>Transiente</td><td><input type="number" id="lim_nr_auto_trans_low"> - <input type="number" id="lim_nr_auto_trans_high"></td></tr><tr><td>Normal</td><td><input type="number" id="lim_nr_auto_norm_low"> - <input type="number" id="lim_nr_auto_norm_high"></td></tr></table>` },
+                    { title: "NR EM AUTORROTAÇÃO", content: `<table><tr><th>Faixa</th><th>Valor (%)</th></tr><tr><td>120%</td><td>Só MTF</td></tr><tr><td>Máximo</td><td><input type="number" id="lim_nr_auto_max"></td></tr><tr><td>Transiente</td><td><input type="number" id="lim_nr_auto_trans_low"> - <input type="number" id="lim_nr_auto_trans_high"></td></tr><tr><td>Normal</td><td><input type="number" id="lim_nr_auto_norm_low"> - <input type="number" id="lim_nr_auto_norm_high"></td></tr></table>` },
                     { title: "LIMITES DE BANK", content: `<table><tr><td>Máx Roll</td><td><input type="number" id="lim_bank_roll">º</td></tr><tr><td>Máx Pitch</td><td><input type="number" id="lim_bank_pitch">º</td></tr><tr><td>PRI SERVO PRESS</td><td><input type="number" id="lim_bank_servo">º</td></tr></table>` }
                 ]
             },
@@ -615,7 +653,25 @@
             document.getElementById('footerActions').classList.add('hidden');
             document.getElementById('btnBackHome').classList.add('hidden');
             document.getElementById('headerProgress').classList.remove('hidden');
+            document.getElementById('btnFloatingExit').classList.remove('visible');
             closeStats();
+            window.scrollTo(0, 0);
+        }
+
+        function handleScroll() {
+            const btn = document.getElementById('btnFloatingExit');
+            const welcome = document.getElementById('welcomeScreen');
+            
+            // Só mostra se NÃO estiver na home e descer um pouco
+            if (welcome.classList.contains('hidden')) {
+                if (window.scrollY > 120) {
+                    btn.classList.add('visible');
+                } else {
+                    btn.classList.remove('visible');
+                }
+            } else {
+                btn.classList.remove('visible');
+            }
         }
 
         function showTestConfig() {
@@ -693,6 +749,11 @@
             document.getElementById('testConfigScreen').classList.add('hidden');
             document.getElementById('testPlayScreen').classList.remove('hidden');
             document.getElementById('headerProgress').classList.add('hidden');
+            
+            // Mostrar rodapé e ocultar botões do modo estudo
+            document.getElementById('footerActions').classList.remove('hidden');
+            document.getElementById('btnGabarito').classList.add('hidden');
+            document.querySelectorAll('#footerActions .btn').forEach(b => b.classList.add('hidden'));
             
             renderTestQuestion();
         }
@@ -777,6 +838,12 @@
             document.getElementById('welcomeScreen').classList.add('hidden');
             document.getElementById('quizContent').classList.remove('hidden');
             document.getElementById('footerActions').classList.remove('hidden');
+            
+            // Mostrar botões normais
+            document.querySelectorAll('#footerActions .btn').forEach(b => b.classList.remove('hidden'));
+            
+            document.getElementById('btnFloatingExit').classList.add('visible');
+
             renderQuiz();
             loadProgress();
             updateProgress();
