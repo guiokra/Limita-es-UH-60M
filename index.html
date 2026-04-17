@@ -28,7 +28,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
-            padding-bottom: 60px;
+            padding-bottom: 150px; /* Aumentado para dar folga total no mobile */
         }
 
         .header {
@@ -245,44 +245,48 @@
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            background: rgba(26, 29, 33, 0.8);
-            padding: 20px;
+            gap: 12px;
+            background: rgba(26, 29, 33, 0.85);
+            padding: 15px;
             border-radius: 12px;
             border: 1px solid var(--border-color);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             z-index: 1000;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            margin-top: 0;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
             width: auto;
         }
 
         .footer-actions .btn {
             flex: none;
-            width: 160px;
-            max-width: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            width: 150px;
+            font-size: 0.85rem;
+            padding: 10px;
         }
 
         @media (max-width: 1100px) {
             .footer-actions {
                 position: fixed;
-                right: 10px;
+                right: 0;
+                left: 0;
+                bottom: 0;
                 top: auto;
-                bottom: 20px;
                 transform: none;
                 flex-direction: row;
-                width: calc(100% - 20px);
-                justify-content: center;
-                background: var(--card-bg);
-                padding: 10px;
-                border-radius: 8px;
+                width: 100%;
+                background: rgba(15, 17, 19, 0.98);
+                padding: 8px 10px; /* Mais compacto */
+                border-radius: 0;
+                border-top: 1px solid var(--border-color);
+                gap: 6px;
+                box-shadow: 0 -4px 15px rgba(0,0,0,0.7);
             }
             .footer-actions .btn {
                 width: auto;
                 flex: 1;
-                font-size: 0.8rem;
-                padding: 8px 5px;
+                font-size: 0.7rem;
+                padding: 6px 2px;
+                height: 36px; /* Altura reduzida */
+                border-radius: 4px;
             }
         }
 
