@@ -28,7 +28,7 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
-            padding-bottom: 100px;
+            padding-bottom: 60px;
         }
 
         .header {
@@ -239,20 +239,51 @@
         }
 
         .footer-actions {
-            margin-top: 40px;
-            padding: 20px 15px;
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            border-top: 1px solid var(--border-color);
-            background-color: var(--bg-color);
+            flex-direction: column;
+            gap: 15px;
+            background: rgba(26, 29, 33, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-top: 0;
+            width: auto;
         }
 
         .footer-actions .btn {
-            flex: 1;
-            min-width: 130px;
-            max-width: 200px;
+            flex: none;
+            width: 160px;
+            max-width: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 1100px) {
+            .footer-actions {
+                position: fixed;
+                right: 10px;
+                top: auto;
+                bottom: 20px;
+                transform: none;
+                flex-direction: row;
+                width: calc(100% - 20px);
+                justify-content: center;
+                background: var(--card-bg);
+                padding: 10px;
+                border-radius: 8px;
+            }
+            .footer-actions .btn {
+                width: auto;
+                flex: 1;
+                font-size: 0.8rem;
+                padding: 8px 5px;
+            }
         }
 
         .stats-overlay {
@@ -304,6 +335,12 @@
             border: 1px solid var(--border-color);
             padding: 10px;
             text-align: left;
+            white-space: nowrap;
+        }
+
+        /* Estilo para celulas que contem texto longo */
+        td:first-child {
+            white-space: normal;
         }
 
         th {
@@ -341,31 +378,46 @@
 
         @media (max-width: 600px) {
             .header {
-                padding: 15px 20px;
+                padding: 15px 15px;
             }
             .header-content {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
+                text-align: center;
             }
             .progress-container {
                 width: 100%;
             }
             .progress-text {
-                align-items: flex-start;
+                align-items: center;
+                margin-bottom: 5px;
             }
             .container {
-                padding: 20px;
+                padding: 15px 10px;
             }
             .footer-actions {
-                padding: 15px 20px;
-                flex-direction: column;
-                gap: 10px;
+                padding: 15px;
+                flex-direction: row;
+                justify-content: center;
+                gap: 8px;
             }
             .btn {
-                width: 100%;
+                width: auto;
+                flex: 1;
             }
             body {
-                padding-top: 140px;
+                padding-top: 0;
+            }
+            
+            input[type="text"], input[type="number"] {
+                width: 60px;
+                padding: 4px 5px;
+                margin: 0 2px;
+            }
+            
+            td, th {
+                padding: 6px 4px;
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -654,12 +706,7 @@
                             <tr><td>Contínuo</td><td>Até <input type="number" id="lim_tgt_cont"></td></tr>
                             <tr><td>Abortar Partida</td><td>Acima de <input type="number" id="lim_tgt_abort"></td></tr>
                         </table>`
-                    }
-                ]
-            },
-            {
-                section: "Limitações de Óleo",
-                items: [
+                    },
                     {
                         title: "ENG OIL P (Pressão do Óleo do Motor)",
                         content: `<table>
@@ -676,7 +723,12 @@
                             <tr><td>30 min</td><td><input type="number" id="lim_oil_eng_t_30min_low"> - <input type="number" id="lim_oil_eng_t_30min_high"></td></tr>
                             <tr><td>Contínuo</td><td><input type="number" id="lim_oil_eng_t_cont_low"> - <input type="number" id="lim_oil_eng_t_cont_high"></td></tr>
                         </table>`
-                    },
+                    }
+                ]
+            },
+            {
+                section: "TRANSMISSÃO",
+                items: [
                     {
                         title: "XMSN OIL P (Pressão do Óleo da Transmissão)",
                         content: `<table>
@@ -699,7 +751,7 @@
                 ]
             },
             {
-                section: "Hidráulica e Backup",
+                section: "HIDRÁULICO",
                 items: [
                     {
                         title: "BACKUP HYD PUMP",
@@ -713,7 +765,7 @@
                 ]
             },
             {
-                section: "Mecânica de Voo",
+                section: "STARTER E APU",
                 items: [
                     {
                         title: "STARTER",
