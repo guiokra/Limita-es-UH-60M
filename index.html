@@ -189,13 +189,65 @@
         }
 
         .correct-input {
-            border-color: var(--success) !important;
-            background-color: rgba(76, 175, 80, 0.1) !important;
+            border: 1.5px solid var(--success) !important;
+            background-color: rgba(76, 175, 80, 0.08) !important;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.15);
+        }
+
+        .indicator-box {
+            background-color: #000;
+            color: #ffff00;
+            padding: 2px 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: bold;
+            border-radius: 2px;
+            display: inline-block;
+            margin: 2px;
+            font-size: 0.85rem;
+            border: 1px solid #444;
+            letter-spacing: 0.5px;
+            box-shadow: 1px 1px 0px #222;
+        }
+
+        .indications-wrapper {
+            background-color: #f8fafc;
+            border-left: 4px solid #334155;
+            padding: 12px 15px;
+            margin: 10px 0 15px 0;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .indications-title {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .indication-item {
+            display: block;
+            margin: 4px 0;
+            line-height: 1.4;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .test-category {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #1e293b;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .error-input {
-            border-color: var(--error) !important;
-            background-color: rgba(244, 67, 54, 0.1) !important;
+            border: 1.5px solid var(--error) !important;
+            background-color: rgba(244, 67, 54, 0.08) !important;
+            box-shadow: 0 0 8px rgba(244, 67, 54, 0.15);
         }
 
         .gabarito-text {
@@ -300,42 +352,6 @@
             .progress-container { width: 100%; max-width: none; }
             .btn-back { display: none !important; }
 
-            .btn-floating-exit {
-                position: fixed;
-                top: 20px;
-                left: 20px;
-                z-index: 2000;
-                padding: 10px 18px;
-                border-radius: 50px;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-                background-color: rgba(30,32,35,0.95);
-                border: 1px solid var(--primary);
-                color: var(--primary);
-                font-size: 0.85rem;
-                font-weight: 700;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                opacity: 0;
-                pointer-events: none;
-                transform: translateY(-20px);
-                cursor: pointer;
-                backdrop-filter: blur(8px);
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }
-
-            .btn-floating-exit.visible {
-                opacity: 1;
-                pointer-events: auto;
-                transform: translateY(0);
-            }
-
-            .btn-floating-exit:active {
-                transform: scale(0.95);
-            }
-
             .title-area h1 { font-size: 1.1rem; }
             .btn-section-correct { margin-bottom: 15px; font-size: 0.7rem; }
         }
@@ -395,6 +411,29 @@
         .feedback-area { margin-top: 20px; min-height: 60px; font-weight: bold; }
         .test-nav { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
 
+        /* Estilos Prova Completa */
+        .full-test-section { margin-top: 30px; border-bottom: 2px solid var(--border-color); padding-bottom: 20px; }
+        .full-test-section h3 { color: var(--primary); text-transform: uppercase; margin-bottom: 20px; border-left: 4px solid var(--primary); padding-left: 10px; }
+        .full-test-question { margin-bottom: 25px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 8px; }
+        .full-test-question h4 { font-size: 0.95rem; margin-bottom: 15px; color: #fff; line-height: 1.4; }
+        .full-test-input { 
+            background: none !important; 
+            border: none !important; 
+            border-bottom: 1px solid var(--primary) !important; 
+            color: var(--primary) !important; 
+            width: auto !important; 
+            min-width: 150px;
+            padding: 0 5px !important;
+            margin: 0 5px;
+            font-family: inherit;
+            display: inline-block !important;
+        }
+        .full-test-input:focus { outline: none; border-bottom-width: 2px !important; }
+        .full-test-input-long { width: 90% !important; display: block !important; margin: 10px 0 !important; }
+        
+        .prova-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media (max-width: 768px) { .prova-grid { grid-template-columns: 1fr; } }
+
         /* Corrigindo visibilidade do Select */
         select {
             appearance: none;
@@ -425,11 +464,7 @@
         }
     </style>
 </head>
-<body onscroll="handleScroll()">
-    <button class="btn-floating-exit" id="btnFloatingExit" onclick="goToHome()">
-        <span>←</span> SAIR
-    </button>
-
+<body>
     <div class="header" id="mainHeader">
         <div class="header-content">
             <button class="btn btn-back hidden" id="btnBackHome" onclick="goToHome()">← Sair</button>
@@ -451,6 +486,7 @@
             <div style="display: flex; flex-direction: column; gap: 15px; max-width: 300px; margin: 0 auto;">
                 <button class="btn" onclick="startApp()">Modo Estudo</button>
                 <button class="btn btn-secondary" onclick="showTestConfig()">Simulação de Teste</button>
+                <button class="btn btn-outline" onclick="showFullTest()">EMG</button>
             </div>
         </div>
 
@@ -487,6 +523,7 @@
 
         <!-- Tela de Jogo do Teste -->
         <div id="testPlayScreen" class="hidden">
+            <!-- ... existing code ... -->
             <div class="test-container">
                 <div id="testProgress">Pergunta 1 de X</div>
                 <div class="test-question-card" id="questionCard">
@@ -503,12 +540,20 @@
                 </div>
             </div>
         </div>
+
+        <!-- Tela de Prova Completa -->
+        <div id="fullTestScreen" class="hidden" style="margin-bottom: 100px;">
+            <div class="test-category">FINAL</div>
+            <h2 class="test-title" style="text-align: center;">PROVA DE EMERGÊNCIAS (EMG)</h2>
+            <div id="fullTestContent"></div>
+        </div>
     </div>
 
     <div class="footer-actions hidden" id="footerActions">
+        <button class="btn btn-outline" id="btnSairFooter" onclick="goToHome()" style="display: none;">Sair</button>
         <button class="btn btn-outline" onclick="refazer()">Refazer</button>
         <button class="btn btn-secondary" onclick="toggleGabarito()" id="btnGabarito">Gabarito</button>
-        <button class="btn" onclick="corrigir()">Corrigir Prova</button>
+        <button class="btn" id="btnCorrigir" onclick="corrigir()">Corrigir</button>
     </div>
 
     <div id="statsOverlay" class="stats-overlay hidden">
@@ -528,44 +573,124 @@
 
     <script>
         const answerKey = {
-            "lim_np_mtf": 114, "lim_np_12s_low": 105, "lim_np_12s_high": 107, "lim_np_trans1_low": 101, "lim_np_trans1_high": 105,
-            "lim_np_cont_low": 95, "lim_np_cont_high": 101, "lim_np_trans2_low": 91, "lim_np_trans2_high": 95,
-            "lim_np_avoid1_low": 20, "lim_np_avoid1_high": 40, "lim_np_avoid2_low": 60, "lim_np_avoid2_high": 90,
-            "lim_ng_12s_low": 105, "lim_ng_12s_high": 106, "lim_ng_cont_low": 0, "lim_ng_cont_high": 105,
-            "lim_q_bi_low80_10s": 144, "lim_q_bi_low80_cont": 120, "lim_q_bi_high80_10s": 144, "lim_q_bi_high80_cont": 100,
-            "lim_q_mono_cont": 135, "lim_q_mono_10s": 144,
-            "lim_tgt_12s_low": 903, "lim_tgt_12s_high": 949, "lim_tgt_2min_low": 879, "lim_tgt_2min_high": 903,
-            "lim_tgt_10min_low": 846, "lim_tgt_10min_high": 879, "lim_tgt_30min_low": 793, "lim_tgt_30min_high": 846,
-            "lim_tgt_cont": 793, "lim_tgt_abort": 851,
-            "lim_oil_eng_p_5min_low": 100, "lim_oil_eng_p_5min_high": 120, "lim_oil_eng_p_cont_low": 26, "lim_oil_eng_p_cont_high": 100, "lim_oil_eng_p_idle_low": 22, "lim_oil_eng_p_idle_high": 26,
-            "lim_oil_eng_t_30min_low": 135, "lim_oil_eng_t_30min_high": 150, "lim_oil_eng_t_cont_low": -20, "lim_oil_eng_t_cont_high": 135,
-            "lim_oil_xmsn_p_prec_low": 65, "lim_oil_xmsn_p_prec_high": 130, "lim_oil_xmsn_p_cont_low": 30, "lim_oil_xmsn_p_cont_high": 65,
-            "lim_oil_xmsn_p_idle_low": 20, "lim_oil_xmsn_p_idle_high": 30, "lim_oil_xmsn_p_10deg_low": 30, "lim_oil_xmsn_p_10deg_high": 35,
+            "lim_np_mtf": 114, 
+            "lim_np_12s_low": 105, "lim_np_12s_high": 107, 
+            "lim_np_trans1_low": 101, "lim_np_trans1_high": 105,
+            "lim_np_cont_low": 95, "lim_np_cont_high": 101, 
+            "lim_np_trans2_low": 91, "lim_np_trans2_high": 95,
+            "lim_np_avoid1_low": 20, "lim_np_avoid1_high": 40,
+            "lim_np_avoid2_low": 60, "lim_np_avoid2_high": 90,
+
+            "lim_oil_xmsn_p_prec_low": 65, "lim_oil_xmsn_p_prec_high": 130, 
+            "lim_oil_xmsn_p_cont_low": 30, "lim_oil_xmsn_p_cont_high": 65, 
+            "lim_oil_xmsn_p_idle_low": 20, "lim_oil_xmsn_p_idle_high": 30,
+            "lim_oil_xmsn_p_10deg_low": 30, "lim_oil_xmsn_p_10deg_high": 35, 
             "lim_oil_xmsn_p_15deg_low": 10, "lim_oil_xmsn_p_15deg_high": 15,
-            "lim_oil_xmsn_t_prec_low": 105, "lim_oil_xmsn_t_prec_high": 140, "lim_oil_xmsn_t_cont_low": -20, "lim_oil_xmsn_t_cont_high": 105,
-            "lim_hyd_temp_cont_low": -54, "lim_hyd_temp_cont_high": 32, "lim_hyd_temp_r1_low": 33, "lim_hyd_temp_r1_high": 38,
-            "lim_hyd_time_r1_work": 24, "lim_hyd_time_r1_rest": 72, "lim_hyd_temp_r2_low": 39, "lim_hyd_temp_r2_high": 52,
-            "lim_hyd_time_r2_work": 16, "lim_hyd_time_r2_rest": 48,
-            "lim_start_temp_low": 15, "lim_start_p1_a": 2, "lim_start_p1_rest": 3, "lim_start_p1_b": 2,
-            "lim_start_temp_high_low": 15, "lim_start_temp_high_high": 52, "lim_start_p2": 2,
-            "lim_start_add_rest": 30, "lim_start_cycle_rest": 1,
-            "lim_apu_on_temp": 43, "lim_apu_on_time": 30, "lim_apu_off_temp": 43, "lim_apu_oil_hot": 30,
-            "lim_nr_pot_trans1_low": 101, "lim_nr_pot_trans1_high": 107, "lim_nr_pot_cont_low": 95, "lim_nr_pot_cont_high": 101,
+
+            "lim_ng_12s_low": 105, "lim_ng_12s_high": 106, 
+            "lim_ng_cont_low": 0, "lim_ng_cont_high": 105,
+
+            "lim_q_bi_low80_10s": 120, "lim_q_bi_low80_144": 144, // 120-144
+            "lim_q_bi_low80_cont": 120,
+            "lim_q_bi_high80_10s": 100, "lim_q_bi_high80_144": 144, // 100-144
+            "lim_q_bi_high80_cont": 100,
+
+            "lim_q_mono_cont": 135, 
+            "lim_q_mono_10s_low": 135, "lim_q_mono_10s_high": 144,
+
+            "lim_tgt_12s_low": 903, "lim_tgt_12s_high": 949, 
+            "lim_tgt_2min_low": 879, "lim_tgt_2min_high": 903, 
+            "lim_tgt_10min_low": 846, "lim_tgt_10min_high": 879,
+            "lim_tgt_30min_low": 793, "lim_tgt_30min_high": 846, 
+            "lim_tgt_cont": 793, 
+            "lim_tgt_abort": 851,
+
+            "lim_hyd_temp_cont_low": -54, "lim_hyd_temp_cont_high": 32, 
+            "lim_hyd_temp_r1_low": 33, "lim_hyd_temp_r1_high": 38,
+            "lim_hyd_time_r1_work": 24, "lim_hyd_time_r1_rest": 72,
+
+            "lim_oil_eng_p_5min_low": 100, "lim_oil_eng_p_5min_high": 120, 
+            "lim_oil_eng_p_cont_low": 26, "lim_oil_eng_p_cont_high": 100, 
+            "lim_oil_eng_p_idle_low": 22, "lim_oil_eng_p_idle_high": 26,
+
+            "lim_oil_eng_t_30min_low": 135, "lim_oil_eng_t_30min_high": 150, 
+            "lim_oil_eng_t_cont_low": -20, "lim_oil_eng_t_cont_high": 135,
+
+            "lim_oil_xmsn_t_prec_low": 105, "lim_oil_xmsn_t_prec_high": 140, 
+            "lim_oil_xmsn_t_cont_low": -20, "lim_oil_xmsn_t_cont_high": 105,
+
+            "lim_start_temp_limit": 15, "lim_start_p1_a": 2, "lim_start_p1_rest": 3, "lim_start_p1_b": 2,
+            "lim_start_cycle_rest": 1,
+
+            "lim_apu_on_threshold": 43, "lim_apu_on_time": 30,
+            "lim_apu_off_threshold": 51,
+            "lim_apu_oil_hot_time": 30,
+
+            "lim_nr_pot_trans1_low": 101, "lim_nr_pot_trans1_high": 105, 
+            "lim_nr_pot_cont_low": 95, "lim_nr_pot_cont_high": 101, 
             "lim_nr_pot_trans2_low": 91, "lim_nr_pot_trans2_high": 95,
-            "lim_nr_auto_mtf_txt": "MTF", "lim_nr_auto_max": 110, "lim_nr_auto_trans_low": 105, "lim_nr_auto_trans_high": 110,
+
+            "lim_nr_auto_max": 110, 
+            "lim_nr_auto_trans_low": 105, "lim_nr_auto_trans_high": 110,
             "lim_nr_auto_norm_low": 90, "lim_nr_auto_norm_high": 105,
-            "lim_bank_roll": 60, "lim_bank_pitch": 30, "lim_bank_servo": 30,
+
+            "lim_bank_roll": 60, "lim_bank_pitch": 30,
+            "lim_bank_servo": 30,
             "lim_vne": 193, "lim_v_farol_ext": 180, "lim_v_farol_pouso_ext": 130, "lim_v_farol_busca_ext": 100,
-            "lim_v_janela": 170, "lim_v_porta_aberta": 145, "lim_v_porta_voo": 80, "lim_v_1hyd": 170, "lim_v_2hyd": 150, "lim_v_2hyd_imc": 140,
-            "lim_v_auto_low": 150, "lim_v_auto_high": 130, "lim_v_auto_dist": 110, "lim_v_auto_stab": 120,
-            "lim_v_load_low": 140, "lim_v_load_high": 120, "lim_v_1eng": 130, "lim_v_corrido": 60, "lim_v_wind_rotor": 45, "lim_v_wind_lat": 45,
-            "lim_stab_low40": 0, "lim_stab_high40": 0,
-            "lim_hook_load": 9000, "lim_hook_bank": 30, "lim_hook_rear": 35,
-            "lim_anti_ice_check": 27,
+            "lim_v_janela": 170, "lim_v_porta_aberta": 145, "lim_v_porta_voo": 80,
+            "lim_v_1hyd": 170, "lim_v_2hyd": 150, "lim_v_2hyd_imc": 140,
+            "lim_v_auto_peso_low": 150, "lim_v_auto_peso_high": 130,
+            "lim_v_auto_dist": 110, "lim_v_auto_stab": 120,
+            "lim_v_load_low": 140, "lim_v_load_high": 120,
+            "lim_v_1eng": 130, "lim_v_corrido": 60,
+            "lim_v_wind_rotor": 45, "lim_v_wind_lat": 45,
+            "lim_stab_low40": "TODO PARA BAIXO", "lim_stab_high40": 0,
             "lim_land_tilt_up": 15, "lim_land_tilt_red": 2, "lim_land_tilt_wind": 5, "lim_land_tilt_down": 6, "lim_land_wind_tail": 15,
+            "lim_hook_load": 9000, "lim_hook_bank": 30, "lim_hook_rear": 35,
             "lim_land_weight1": 16825, "lim_land_sink1_flat": 540, "lim_land_sink1_slope": 360,
             "lim_land_weight2": 16825, "lim_land_sink2_flat": 300, "lim_land_sink2_slope": 180,
-            "lim_prohib_hover_yaw": 30, "lim_yaw_kias": 80
+            "lim_taxi_rear": "PROIBIDO",
+            "lim_anti_ice_check": 27,
+            "fd_ias_min": 50, "fd_ias_max": 150, "fd_ias_auto": 50,
+            "fd_hdg_min": 50, "fd_alt_min": 50, "fd_ralt_max": 1500,
+            "fd_vs_min": 50, "fd_vs_max": 2000,
+            "fd_altp_capt": 300, "fd_altp_muda": 50,
+            "fd_ga_ias": 70, "fd_ga_fpm": 750,
+            "fd_fms_min": 50,
+            "fd_decl_min": 70, "fd_decl_ias1": 70, "fd_decl_alt": 200, "fd_decl_pitch": 50, "fd_decl_ias2": 70,
+            "hvr_decl_min": 60,
+            "hvr_fwd": 60, "hvr_aft": 20, "hvr_lat": 20,
+            "hvr_below60": "HVR DECL (DESACELERA PARA HOVER POSITION)",
+            "hvr_60_80": 80, "hvr_80_120": "ATUAL", "hvr_above120": 120,
+            "hvr_beep_short": 2, "hvr_beep_long": "VEL",
+
+            // Emergências (Gabarito Oficial)
+            "em_2eng": "AUTORROTAÇÃO",
+            "em_alerts1": "Atingir uma velocidade segura monomotor (Se possível)",
+            "em_alerts2": "Cargas externas e provisões - Alijar (se necessário)",
+            "em_fire_urg": "POUSAR ASSIM QUE POSSÍVEL",
+            "em_fire_apu1": "Ajuste a velocidade para 80 KIAS ou menos",
+            "em_fire_apu2a": "Alavanca ENG POWER CONT", "em_fire_apu2b": "OFF",
+            "em_fire_apu3a": "T-handle do motor ou da APU", "em_fire_apu3b": "PUXAR",
+            "em_fire_apu4a": "Interruptor FIRE EXTGH", "em_fire_apu4b": "MAIN / RESERVE como requerido",
+            "em_fire_elec1": "BATERIAS e GERADORES", "em_fire_elec2": "OFF",
+            "em_fd_stab1": "Interruptor RMT SBY", "em_fd_stab2": "Pressionar para desacoplar os modos do Flight Director",
+            "em_lowside1": "Alavanca ENG POWER CONT (motor com baixo Q/TGT)", "em_lowside2": "LOCKOUT",
+            "em_stab_fail1": "Interruptor slew-up do estabilizador no cíclico", "em_stab_fail2": "Ajustar",
+            "em_vib_solo1a": "Alavancas ENG POWER CONT", "em_vib_solo1b": "OFF",
+            "em_vib_solo2a": "Seletores ENG FUEL SYS", "em_vib_solo2b": "OFF",
+            "em_vib_solo3a": "Interruptores FUEL BOOST PUMP", "em_vib_solo3b": "OFF",
+            "em_raio1a": "Alavancas ENG POWER CONT", "em_raio1b": "Ajustar", "em_raio2": "POUSAR ASSIM QUE POSSÍVEL",
+            "em_tail_cruise1a": "AUTORROTAÇÃO", "em_tail_cruise1b": "Manter velocidade igual ou superior a 80 KIAS",
+            "em_tail_cruise2a": "Alavancas ENG POWER CONT", "em_tail_cruise2b": "OFF",
+            "em_tail_hover_r1a": "Coletivo", "em_tail_hover_r1b": "Reduzir",
+            "em_tail_hover_r2a": "Alavancas ENG POWER CONT", "em_tail_hover_r2b": "OFF",
+            "em_tail_hover_l1a": "Alavancas ENG POWER CONT", "em_tail_hover_l1b": "Retardar",
+            "em_tail_hover_l2a": "Coletivo", "em_tail_hover_l2b": "Aumentar",
+            "em_tail_hover_l3a": "Alavancas ENG POWER CONT", "em_tail_hover_l3b": "OFF",
+            "em_tail_hover_l4a": "Coletivo", "em_tail_hover_l4b": "Ajustar para o pouso",
+            "em_hyd1_fail": "Interruptor BACK-UP HYD PUMP — ON",
+            "em_tr_servo1a": "Interruptor TAIL SERVO", "em_tr_servo1b": "BACK-UP"
         };
 
         const quizData = [
@@ -574,8 +699,8 @@
                 items: [
                     { title: "NP (Turbina de Potência)", content: `<table><tr><th>Condição</th><th>Faixa (%)</th></tr><tr><td>Somente MTF</td><td>Até <input type="number" id="lim_np_mtf"></td></tr><tr><td>12 seg transiente</td><td><input type="number" id="lim_np_12s_low"> - <input type="number" id="lim_np_12s_high"></td></tr><tr><td>Transiente</td><td><input type="number" id="lim_np_trans1_low"> - <input type="number" id="lim_np_trans1_high"></td></tr><tr><td>Contínuo</td><td><input type="number" id="lim_np_cont_low"> - <input type="number" id="lim_np_cont_high"></td></tr><tr><td>Transiente</td><td><input type="number" id="lim_np_trans2_low"> - <input type="number" id="lim_np_trans2_high"></td></tr><tr><td>Evitar</td><td><input type="number" id="lim_np_avoid1_low"> - <input type="number" id="lim_np_avoid1_high"> e <input type="number" id="lim_np_avoid2_low"> - <input type="number" id="lim_np_avoid2_high"></td></tr></table>` },
                     { title: "NG (Gerador de Gás)", content: `<table><tr><th>Condição</th><th>Faixa (%)</th></tr><tr><td>12 segundos</td><td><input type="number" id="lim_ng_12s_low" step="0.1"> - <input type="number" id="lim_ng_12s_high" step="0.1"></td></tr><tr><td>Contínuo</td><td><input type="number" id="lim_ng_cont_low" step="0.1"> - <input type="number" id="lim_ng_cont_high" step="0.1"></td></tr></table>` },
-                    { title: "Torque (Q) Bimotor", content: `<table><tr><th>Condição</th><th>10 seg (%)</th><th>Cont. (%)</th></tr><tr><td>&lt; 80 KIAS</td><td><input type="number" id="lim_q_bi_low80_10s"></td><td><input type="number" id="lim_q_bi_low80_cont"></td></tr><tr><td>&gt; 80 KIAS</td><td><input type="number" id="lim_q_bi_high80_10s"></td><td><input type="number" id="lim_q_bi_high80_cont"></td></tr></table>` },
-                    { title: "Torque (Q) Monomotor", content: `<table><tr><th>Condição</th><th>Valor (%)</th></tr><tr><td>Contínuo</td><td><input type="number" id="lim_q_mono_cont"></td></tr><tr><td>10 segundos</td><td><input type="number" id="lim_q_mono_10s"></td></tr></table>` },
+                    { title: "Torque (Q) Bimotor", content: `<table><tr><th>Condição</th><th>10 seg (%)</th><th>Cont. (%)</th></tr><tr><td>&lt; 80 KIAS</td><td><input type="number" id="lim_q_bi_low80_10s" style="width:40px"> - <input type="number" id="lim_q_bi_low80_144" style="width:40px"></td><td>Até <input type="number" id="lim_q_bi_low80_cont" style="width:40px"></td></tr><tr><td>&gt; 80 KIAS</td><td><input type="number" id="lim_q_bi_high80_10s" style="width:40px"> - <input type="number" id="lim_q_bi_high80_144" style="width:40px"></td><td>Até <input type="number" id="lim_q_bi_high80_cont" style="width:40px"></td></tr></table>` },
+                    { title: "Torque (Q) Monomotor", content: `<table><tr><th>Condição</th><th>Valor (%)</th></tr><tr><td>Contínuo</td><td>Até <input type="number" id="lim_q_mono_cont"></td></tr><tr><td>10 segundos</td><td><input type="number" id="lim_q_mono_10s_low" style="width:45px"> - <input type="number" id="lim_q_mono_10s_high" style="width:45px"></td></tr></table>` },
                     { title: "TGT (Temperatura de Turbina)", content: `<table><tr><th>Condição</th><th>Faixa (ºC)</th></tr><tr><td>12 seg trans</td><td><input type="number" id="lim_tgt_12s_low"> - <input type="number" id="lim_tgt_12s_high"></td></tr><tr><td>2.5 min</td><td><input type="number" id="lim_tgt_2min_low"> - <input type="number" id="lim_tgt_2min_high"></td></tr><tr><td>10 min</td><td><input type="number" id="lim_tgt_10min_low"> - <input type="number" id="lim_tgt_10min_high"></td></tr><tr><td>30 min</td><td><input type="number" id="lim_tgt_30min_low"> - <input type="number" id="lim_tgt_30min_high"></td></tr><tr><td>Contínuo</td><td>Até <input type="number" id="lim_tgt_cont"></td></tr><tr><td>Abortar Partida</td><td>&gt; <input type="number" id="lim_tgt_abort"></td></tr></table>` },
                     { title: "ENG OIL P (Pressão do Óleo do Motor)", content: `<table><tr><th>Condição</th><th>Valor (PSI)</th></tr><tr><td>5 min</td><td><input type="number" id="lim_oil_eng_p_5min_low"> - <input type="number" id="lim_oil_eng_p_5min_high"></td></tr><tr><td>Contínuo</td><td><input type="number" id="lim_oil_eng_p_cont_low"> - <input type="number" id="lim_oil_eng_p_cont_high"></td></tr><tr><td>Idle trans</td><td><input type="number" id="lim_oil_eng_p_idle_low"> - <input type="number" id="lim_oil_eng_p_idle_high"></td></tr></table>` },
                     { title: "ENG OIL T (Temperatura do Óleo do Motor)", content: `<table><tr><th>Condição</th><th>Faixa (ºC)</th></tr><tr><td>30 min</td><td><input type="number" id="lim_oil_eng_t_30min_low"> - <input type="number" id="lim_oil_eng_t_30min_high"></td></tr><tr><td>Contínuo</td><td><input type="number" id="lim_oil_eng_t_cont_low"> - <input type="number" id="lim_oil_eng_t_cont_high"></td></tr></table>` }
@@ -597,8 +722,8 @@
             {
                 section: "STARTER E APU",
                 items: [
-                    { title: "STARTER", content: `<table><tr><th>Temp</th><th>Ciclo</th></tr><tr><td>&le; <input type="number" id="lim_start_temp_low"> ºC</td><td><input type="number" id="lim_start_p1_a"> Partidas, <br><input type="number" id="lim_start_p1_rest"> minutos descanso, <br><input type="number" id="lim_start_p1_b"> Partidas</td></tr><tr><td><input type="number" id="lim_start_temp_high_low"> - <input type="number" id="lim_start_temp_high_high"> ºC</td><td><input type="number" id="lim_start_p2"> Partidas</td></tr><tr><td>Partidas adicionais</td><td><input type="number" id="lim_start_add_rest"> minutos descanso</td></tr><tr><td>Tempo entre ciclos de partida</td><td><input type="number" id="lim_start_cycle_rest"> minutos intervalo</td></tr></table>` },
-                    { title: "APU", content: `<table><tr><th>Condição</th><th>Tempo Máximo</th></tr><tr><td>&ge; <input type="number" id="lim_apu_on_temp">ºC (Rotor e motor ligados)</td><td><input type="number" id="lim_apu_on_time"> min</td></tr><tr><td>&le; <input type="number" id="lim_apu_off_temp">ºC (Rotor e motor desligados)</td><td>Sem limite</td></tr><tr><td>APU OIL HOT acesa</td><td><input type="number" id="lim_apu_oil_hot"> min</td></tr></table>` }
+                    { title: "STARTER", content: `<table><tr><th>Temp</th><th>Ciclo</th></tr><tr><td>&le; <input type="number" id="lim_start_temp_low"> ºC</td><td><input type="number" id="lim_start_p1_a"> Partidas adicionais, <br><input type="number" id="lim_start_p1_rest"> minutos descanso, <br><input type="number" id="lim_start_p1_b"> Partidas adicionais</td></tr><tr><td><input type="number" id="lim_start_temp_high_low"> - <input type="number" id="lim_start_temp_high_high"> ºC</td><td><input type="number" id="lim_start_p2"> Partidas adicionais</td></tr><tr><td>Partidas adicionais</td><td><input type="number" id="lim_start_add_rest"> minutos descanso</td></tr><tr><td>Tempo entre ciclos de partida</td><td><input type="number" id="lim_start_cycle_rest"> minutos intervalo</td></tr></table>` },
+                    { title: "APU", content: `<table><tr><th>Condição</th><th>Tempo Máximo</th></tr><tr><td>&ge; <input type="number" id="lim_apu_on_threshold">ºC (Rotor e motor ligados)</td><td><input type="number" id="lim_apu_on_time"> min</td></tr><tr><td>&le; <input type="number" id="lim_apu_off_threshold">ºC (Rotor e motor desligados)</td><td>Sem limite</td></tr><tr><td>APU OIL HOT acesa</td><td><input type="number" id="lim_apu_oil_hot_time"> min</td></tr></table>` }
                 ]
             },
             {
@@ -650,28 +775,228 @@
             document.getElementById('quizContent').classList.add('hidden');
             document.getElementById('testConfigScreen').classList.add('hidden');
             document.getElementById('testPlayScreen').classList.add('hidden');
+            document.getElementById('fullTestScreen').classList.add('hidden');
             document.getElementById('footerActions').classList.add('hidden');
             document.getElementById('btnBackHome').classList.add('hidden');
             document.getElementById('headerProgress').classList.remove('hidden');
-            document.getElementById('btnFloatingExit').classList.remove('visible');
             closeStats();
             window.scrollTo(0, 0);
         }
 
-        function handleScroll() {
-            const btn = document.getElementById('btnFloatingExit');
-            const welcome = document.getElementById('welcomeScreen');
+        function showFullTest() {
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('fullTestScreen').classList.remove('hidden');
+            document.getElementById('btnBackHome').classList.remove('hidden');
+            document.getElementById('footerActions').classList.remove('hidden');
+
+            // Ajustar rodapé para o modo Prova Completa
+            document.getElementById('btnSairFooter').style.display = 'block';
+            document.getElementById('btnGabarito').classList.remove('hidden');
+            document.querySelectorAll('#footerActions .btn').forEach(b => b.classList.remove('hidden'));
+            document.getElementById('btnCorrigir').onclick = corrigirProvaCompleta;
             
-            // Só mostra se NÃO estiver na home e descer um pouco
-            if (welcome.classList.contains('hidden')) {
-                if (window.scrollY > 120) {
-                    btn.classList.add('visible');
-                } else {
-                    btn.classList.remove('visible');
+            renderFullTest();
+            window.scrollTo(0, 0);
+        }
+
+        function renderFullTest() {
+            const container = document.getElementById('fullTestContent');
+            
+            container.innerHTML = `
+                <div class="full-test-section">
+                    <div class="test-category" style="margin-bottom: 20px;">EMG - EMERGÊNCIAS</div>
+                    
+                    <div class="full-test-question">
+                        <h4>FALHA NOS 2 MOTOR</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item">
+                                <span class="indicator-box">#1 ENG OUT</span> + <span class="indicator-box">#2 ENG OUT</span> + Som contínuo
+                            </div>
+                            <div class="indication-item">- Alterações em NP, TGT, NG, Q, P, NR, alertas ENG OUT e sinal de áudio</div>
+                            <div class="indication-item">- Alteração no ruído do motor</div>
+                        </div>
+                        <strong>Ações imediatas:</strong> – <input type="text" id="em_2eng" class="full-test-input full-test-input-long" placeholder="_____________">
+                    </div>
+
+                    <div class="full-test-question">
+                        <h4>FALHA EM APENAS 1 MOTOR</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item">
+                                <span class="indicator-box">#1 ENG OUT</span> ou <span class="indicator-box">#2 ENG OUT</span> + Som contínuo
+                            </div>
+                            <div class="indication-item">- Alterações em NP, TGT, NG, Q, P, NR, alertas ENG OUT e sinal de áudio</div>
+                            <div class="indication-item">- Alteração no ruído do motor</div>
+                            <div class="indications-title" style="margin-top:10px; font-style: italic;">Indicações adicionais</div>
+                            <div class="indication-item">
+                                <span class="indicator-box">ENG 1 OIL PRESS</span> ou <span class="indicator-box">ENG 2 OIL PRESS</span>
+                            </div>
+                            <div class="indication-item">
+                                <span class="indicator-box">FUEL 1 PRESS LOW</span> ou <span class="indicator-box">FUEL 2 PRESS LOW</span>
+                            </div>
+                        </div>
+                        <strong>Ações imediatas:</strong><br>
+                        – <input type="text" id="em_alerts1" class="full-test-input full-test-input-long" placeholder="___________________________________________________________________"><br>
+                        – <input type="text" id="em_alerts2" class="full-test-input full-test-input-long" placeholder="___________________________________________________________________">
+                    </div>
+
+                    <div class="full-test-question">
+                        <h4>FOGO: APU, ELÉTRICO OU MOTOR</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item">
+                                <span class="indicator-box">FIRE</span>
+                            </div>
+                            <div class="indication-item">- T-Handle do motor - Iluminada</div>
+                            <div class="indication-item">- Rastro de fumaça / chamas visíveis / faíscas ou chama visível, cheiro forte</div>
+                            <div class="indication-item">- T-handle da APU iluminada</div>
+                        </div>
+                        <strong>Urgência para pouso:</strong> - <input type="text" id="em_fire_urg" class="full-test-input full-test-input-long" placeholder="______________________________________________________________________"><br>
+                        <strong>T-handle da APU iluminada:</strong><br>
+                        – <input type="text" id="em_fire_apu1" class="full-test-input full-test-input-long" placeholder="____________________________________________________________________"><br>
+                        – <input type="text" id="em_fire_apu2a" class="full-test-input" placeholder="__________________________________________________"> — <input type="text" id="em_fire_apu2b" class="full-test-input" placeholder="________________"><br>
+                        – <input type="text" id="em_fire_apu3a" class="full-test-input" placeholder="______________________________________"> — <input type="text" id="em_fire_apu3b" class="full-test-input" placeholder="____________"> (como apropriado)<br>
+                        – <input type="text" id="em_fire_apu4a" class="full-test-input" placeholder="__________________________________"> — <input type="text" id="em_fire_apu4b" class="full-test-input" placeholder="________________________________"><br>
+                        <strong>Se houver fogo elétrico:</strong><br>
+                        – <input type="text" id="em_fire_elec1" class="full-test-input" placeholder="____________________________________________________"> — <input type="text" id="em_fire_elec2" class="full-test-input" placeholder="______________">
+                    </div>
+
+                    <div class="full-test-question">
+                        <h4>FALHA NO ACOPLAMENTO DO FLIGHT DIRECTOR</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item">- Qualquer mudança não comandada em pitch, roll ou yaw, além daquelas observadas em condições normais de voo com o flight director acoplado.</div>
+                        </div>
+                        <strong>Ações imediatas:</strong><br>
+                        – <input type="text" id="em_fd_stab1" class="full-test-input" placeholder="_______________________________"> — <input type="text" id="em_fd_stab2" class="full-test-input" placeholder="___________________________________">
+                    </div>
+
+                    <div class="full-test-question">
+                        <h4>FALHA NO CONTROLE DO MOTOR – (DEC/EDECU) FALHA EM BAIXA (LOW SIDE)</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item"><span class="indicator-box">LOW ROTOR R.P.M</span> + som contínuo</div>
+                            <div class="indication-item">– Redução do NR</div>
+                            <div class="indication-item">– Baixo Q/TGT no motor com falha e alto Q/TGT no outro motor</div>
+                        </div>
+                        <strong>Ações imediatas (Se a NR continuar diminuindo e o voo com um único motor não for possível):</strong><br>
+                        – <input type="text" id="em_lowside1" class="full-test-input" placeholder="_________________________________________________"> — <input type="text" id="em_lowside2" class="full-test-input" placeholder="___________________"> (Manter Q aproximadamente 10% abaixo do outro motor)
+                    </div>
+
+                    <div class="full-test-question">
+                        <h4>MUDANÇA NÃO COMANDADA DE PITCH COM NARIZ PARA BAIXO – ESTABILIZADOR</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item">– Ocorre uma atitude de nariz para baixo não comandada</div>
+                        </div>
+                        <strong>Ações imediatas:</strong><br>
+                        – <input type="text" id="em_stab_fail1" class="full-test-input" placeholder="__________________________________________________"> — <input type="text" id="em_stab_fail2" class="full-test-input" placeholder="__________________"> (conforme necessário para interromper a taxa de inclinação do nariz para baixo)
+                    </div>
+
+                    <div class="full-test-question">
+                        <h4>VIBRAÇÕES OU MAU FUNCIONAMENTO DO CONTROLE DE VOO / SISTEMA DO ROTOR NO SOLO</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item">– Retorno de força</div>
+                            <div class="indication-item">– Vibração do rotor principal/rotor de cauda / batimento severo do rotor principal</div>
+                            <div class="indication-item">– Travamento</div>
+                            <div class="indication-item">– Resistência</div>
+                            <div class="indication-item">– Folga excessiva</div>
+                        </div>
+                        <strong>Ações imediatas (Se o mau funcionamento ocorrer no solo ou imediatamente após o pouso):</strong><br>
+                        – <input type="text" id="em_vib_solo1a" class="full-test-input" placeholder="__________________________________________________"> — <input type="text" id="em_vib_solo1b" class="full-test-input" placeholder="__________________"><br>
+                        – <input type="text" id="em_vib_solo2a" class="full-test-input" placeholder="__________________________________________________"> — <input type="text" id="em_vib_solo2b" class="full-test-input" placeholder="__________________"><br>
+                        – <input type="text" id="em_vib_solo3a" class="full-test-input" placeholder="__________________________________________________"> — <input type="text" id="em_vib_solo3b" class="full-test-input" placeholder="__________________">
+                    </div>
+
+                    <div class="full-test-question">
+                        <h4>AERONAVE ATINGIDA POR RAIO</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item">– Potência máxima imediata</div>
+                            <div class="indication-item">– Instrumentos do sistema podem estar inoperantes</div>
+                            <div class="indication-item">– Perda das funções automáticas de controle de voo</div>
+                            <div class="indication-item">– Perda de energia elétrica</div>
+                        </div>
+                        <strong>Ações imediatas:</strong><br>
+                        – <input type="text" id="em_raio1a" class="full-test-input" placeholder="_________________________________"> — <input type="text" id="em_raio1b" class="full-test-input" placeholder="_______________________"> (conforme necessário para controlar NP e NR)<br>
+                        <strong>Urgência para pouso:</strong><br>
+                        <input type="text" id="em_raio2" class="full-test-input full-test-input-long" placeholder="________________________________________________________________________">
+                    </div>
+
+                    <div class="full-test-question">
+                        <h4>PERDA DO CONTROLE DO ROTOR DE CAUDA (PÁG. 1/2)</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item">– O nariz do helicóptero irá girar para a esquerda/direita independentemente da velocidade.</div>
+                            <div class="indication-item">– Em velocidades mais altas, uma guinada para a direita pode se desenvolver mais lentamente, mas pode continuar a aumentar.</div>
+                            <div class="indication-item">– Em configurações de alta potência, uma guinada para a esquerda pode se desenvolver mais lentamente, mas pode se tornar mais significativa se a potência for reduzida.</div>
+                            <div class="indication-item">– Se os componentes do rotor de cauda forem perdidos, o nariz irá mover-se para baixo. O voo nivelado contínuo pode não ser possível após esse tipo de falha.</div>
+                        </div>
+                        Se durante o voo de cruzeiro uma guinada para a direita se tornar incontrolável:<br>
+                        – <input type="text" id="em_tail_cruise1a" class="full-test-input" placeholder="_________________"> — <input type="text" id="em_tail_cruise1b" class="full-test-input" placeholder="_________________________________"><br>
+                        – <input type="text" id="em_tail_cruise2a" class="full-test-input" placeholder="__________________________"> — <input type="text" id="em_tail_cruise2b" class="full-test-input" placeholder="__________________________________________"><br>
+                        Se em baixa velocidade ou em pairado uma guinada para a direita se tornar incontrolável:<br>
+                        – <input type="text" id="em_tail_hover_r1a" class="full-test-input" placeholder="___________________"> — <input type="text" id="em_tail_hover_r1b" class="full-test-input" placeholder="_________________________________________________"><br>
+                        – <input type="text" id="em_tail_hover_r2a" class="full-test-input" placeholder="___________________"> — <input type="text" id="em_tail_hover_r2b" class="full-test-input" placeholder="_________________________________________________"><br>
+                        Se uma guinada incontrolável para a esquerda ocorrer em baixa velocidade ou em pairado:<br>
+                        – <input type="text" id="em_tail_hover_l1a" class="full-test-input" placeholder="_____________________________________"> — <input type="text" id="em_tail_hover_l1b" class="full-test-input" placeholder="_______________________________"><br>
+                        – <input type="text" id="em_tail_hover_l2a" class="full-test-input" placeholder="______________________"> — <input type="text" id="em_tail_hover_l2b" class="full-test-input" placeholder="_______________________________"> (a NR irá diminuir)<br>
+                        – <input type="text" id="em_tail_hover_l3a" class="full-test-input" placeholder="____________________________"> — <input type="text" id="em_tail_hover_l3b" class="full-test-input" placeholder="________________________________________"><br>
+                        – <input type="text" id="em_tail_hover_l4a" class="full-test-input" placeholder="__________________"> — <input type="text" id="em_tail_hover_l4b" class="full-test-input" placeholder="______________________________________________">
+                    </div>
+
+                    <div class="full-test-question">
+                        <h4>HYD PUMP 1 FAIL SEM AVISO DE BACK-UP PUMP ON</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item">- <span class="indicator-box">HYD PUMP 1 FAIL</span> + <span class="indicator-box">T/R SERVO 1 FAIL</span> + <span class="indicator-box">PRI SERVO 1 FAIL</span></div>
+                        </div>
+                        <strong>Ações imediatas:</strong> <input type="text" id="em_hyd1_fail" class="full-test-input full-test-input-long" placeholder="__________________________________">
+                    </div>
+
+                    <div class="full-test-question">
+                        <h4>T/R SERVO 1 FAIL SEM O AVISO DE BACK-UP PUMP ON OU AVISO DE T/R SERVO 2 ON NÃO APARECE</h4>
+                        <div class="indications-wrapper">
+                            <span class="indications-title">Indicações</span>
+                            <div class="indication-item">- <span class="indicator-box">T/R SERVO 1 FAIL</span></div>
+                        </div>
+                        <strong>Ações imediatas:</strong> <input type="text" id="em_tr_servo1a" class="full-test-input" placeholder="_________________________________________"> — <input type="text" id="em_tr_servo1b" class="full-test-input" placeholder="_______________________________">
+                    </div>
+                </div>
+            `;
+        }
+
+        function corrigirProvaCompleta() {
+            let acertos = 0;
+            let respondidas = 0;
+            const container = document.getElementById('fullTestScreen');
+            const inputs = container.querySelectorAll('input:not([readonly])');
+            
+            inputs.forEach(input => {
+                const val = input.value.trim().toUpperCase();
+                const correct = String(answerKey[input.id] || "").toUpperCase();
+                
+                // Limpar estados anteriores
+                input.classList.remove('correct-input', 'error-input');
+                input.title = "";
+
+                if (val !== "") {
+                    respondidas++;
+                    if (val === correct) {
+                        acertos++;
+                        input.classList.add('correct-input');
+                    } else {
+                        input.classList.add('error-input');
+                        if (correct !== "") {
+                            input.title = `Correto: ${correct}`;
+                        }
+                    }
                 }
-            } else {
-                btn.classList.remove('visible');
-            }
+            });
+            
+            showStats("EMG", acertos, respondidas);
         }
 
         function showTestConfig() {
@@ -839,10 +1164,11 @@
             document.getElementById('quizContent').classList.remove('hidden');
             document.getElementById('footerActions').classList.remove('hidden');
             
-            // Mostrar botões normais
+            // Mostrar botões normais e ajustar para modo Estudo (4 botões)
+            document.getElementById('btnSairFooter').style.display = 'block';
+            document.getElementById('btnGabarito').classList.remove('hidden');
             document.querySelectorAll('#footerActions .btn').forEach(b => b.classList.remove('hidden'));
-            
-            document.getElementById('btnFloatingExit').classList.add('visible');
+            document.getElementById('btnCorrigir').onclick = corrigir;
 
             renderQuiz();
             loadProgress();
@@ -912,17 +1238,22 @@
                 if (next.classList.contains('card')) {
                     const inputs = next.querySelectorAll('input:not([readonly])');
                     inputs.forEach(input => {
-                        const val = input.value.trim();
+                        const val = input.value.trim().toUpperCase();
+                        const correct = String(answerKey[input.id] || "").toUpperCase();
+                        
+                        input.classList.remove('correct-input', 'error-input');
+                        input.title = "";
+
                         if (val !== "") {
                             respondidas++;
-                            const correct = answerKey[input.id];
-                            if (val == correct) {
+                            if (val === correct) {
                                 acertos++;
                                 input.classList.add('correct-input');
-                                input.classList.remove('error-input');
                             } else {
                                 input.classList.add('error-input');
-                                input.classList.remove('correct-input');
+                                if (correct !== "") {
+                                    input.title = `Correto: ${correct}`;
+                                }
                             }
                         }
                     });
@@ -948,6 +1279,8 @@
             document.querySelectorAll('input:not([readonly])').forEach(input => {
                 input.value = "";
                 input.classList.remove('correct-input', 'error-input');
+                input.style.backgroundColor = ""; 
+                input.title = "";
             });
             localStorage.removeItem('uh60_progress');
             updateProgress();
