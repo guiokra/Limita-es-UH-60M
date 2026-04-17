@@ -225,6 +225,14 @@
         .btn:active { transform: scale(0.96); }
         .btn-outline { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-color); }
         .btn-secondary { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-color); }
+        .btn-back { 
+            background: rgba(255,255,255,0.05); 
+            padding: 6px 10px; 
+            font-size: 0.65rem; 
+            border: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            align-self: flex-start;
+        }
 
         .btn-section-correct {
             display: block;
@@ -286,7 +294,7 @@
             input[type="text"], input[type="number"] { width: 45px; padding: 4px 1px; font-size: 16px; margin: 0 1px; }
             td, th { padding: 6px 2px; font-size: 0.72rem; word-break: break-word; }
             .section-title { font-size: 0.9rem; margin: 25px 0 10px; width: 100%; }
-            body { padding-bottom: 110px; }
+            body { padding-bottom: 180px; }
             .header { padding: 15px 10px; }
             .header-content { flex-direction: column; text-align: center; padding: 0; gap: 10px; }
             .progress-container { width: 100%; max-width: none; }
@@ -320,16 +328,74 @@
         }
 
         .score-value { font-size: 3rem; color: var(--primary); font-weight: 800; margin: 1rem 0; }
+
+        /* Estilos do Modo Teste */
+        .test-config-card { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; border: 1px solid var(--border-color); max-width: 500px; margin: 0 auto; }
+        .theme-selection { display: grid; grid-template-columns: 1fr; gap: 10px; margin: 1.5rem 0; text-align: left; }
+        .theme-item { display: flex; align-items: center; gap: 10px; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; cursor: pointer; transition: background 0.2s; }
+        .theme-item.selected { background: rgba(212, 175, 55, 0.1); border-color: var(--primary); }
+        .theme-item input { pointer-events: none; width: auto; margin: 0; }
+        
+        .test-container { max-width: 600px; margin: 0 auto; text-align: center; }
+        .test-question-card { 
+            background: var(--card-bg); 
+            padding: 1.5rem; 
+            border-radius: 12px; 
+            border: 1px solid var(--border-color); 
+            margin-top: 20px; 
+            min-height: 250px; 
+            display: flex; 
+            flex-direction: column; 
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+        .test-category { font-size: 0.75rem; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+        .test-title { font-size: 1.4rem; color: #fff; font-weight: 700; margin-bottom: 20px; }
+        .test-prompt { font-size: 1rem; color: var(--muted); margin-bottom: 25px; }
+        .test-input-wrapper { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .test-input { width: 120px !important; font-size: 1.5rem !important; height: 60px !important; }
+        .feedback-area { margin-top: 20px; min-height: 60px; font-weight: bold; }
+        .test-nav { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
+
+        /* Corrigindo visibilidade do Select */
+        select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-color: var(--input-bg) !important;
+            color: white !important;
+            padding: 12px !important;
+            cursor: pointer;
+            border: 1px solid var(--border-color) !important;
+            border-radius: 6px;
+        }
+        
+        select option {
+            background-color: #1A1D21 !important;
+            color: white !important;
+            padding: 10px;
+        }
+
+        .select-all-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            font-size: 0.8rem;
+            text-decoration: underline;
+            cursor: pointer;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
 
     <div class="header" id="mainHeader">
         <div class="header-content">
+            <button class="btn btn-back hidden" id="btnBackHome" onclick="goToHome()">← Sair</button>
             <div class="title-area">
                 <h1>Treino UH-60M – Limitações</h1>
             </div>
-            <div class="progress-container">
+            <div class="progress-container" id="headerProgress">
                 <div class="progress-text" id="progressText">0% concluído (0 / 0)</div>
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="progressBar"></div>
@@ -341,11 +407,63 @@
     <div class="container">
         <div id="welcomeScreen" class="welcome-screen">
             <h2>Simulado de Limitações</h2>
-            <button class="btn" onclick="startApp()">Começar Prova</button>
+            <div style="display: flex; flex-direction: column; gap: 15px; max-width: 300px; margin: 0 auto;">
+                <button class="btn" onclick="startApp()">Modo Estudo</button>
+                <button class="btn btn-secondary" onclick="showTestConfig()">Simulação de Teste</button>
+            </div>
         </div>
 
         <div id="quizContent" class="hidden">
             <div id="sections"></div>
+            <div style="margin-top: 40px; text-align: center; margin-bottom: 60px;">
+                <button class="btn btn-secondary" onclick="goToHome()" style="width: 200px;">← Voltar ao Início</button>
+            </div>
+        </div>
+
+        <!-- Tela de Configuração do Teste -->
+        <div id="testConfigScreen" class="hidden">
+            <div class="test-config-card">
+                <h3>Configurar Simulado</h3>
+                <div style="text-align: right;">
+                    <button class="select-all-btn" onclick="toggleAllThemesSelector()">Selecionar Todos</button>
+                </div>
+                <div class="theme-selection" id="themeSelection">
+                    <!-- Gerado dinamicamente -->
+                </div>
+                <div style="margin: 20px 0;">
+                    <label style="display: block; margin-bottom: 10px;">Quantidade de perguntas:</label>
+                    <select id="testQuestionCount" class="btn btn-secondary" style="width: 100%; border: 1px solid var(--border-color); color: #fff;">
+                        <option value="10">10 perguntas</option>
+                        <option value="20">20 perguntas</option>
+                        <option value="30">30 perguntas</option>
+                        <option value="50">50 perguntas</option>
+                        <option value="all">Todas as perguntas</option>
+                    </select>
+                </div>
+                <button class="btn" style="width: 100%;" onclick="startTest()">Iniciar Simulado</button>
+            </div>
+        </div>
+
+        <!-- Tela de Jogo do Teste -->
+        <div id="testPlayScreen" class="hidden">
+            <div class="test-container">
+                <div id="testProgress">Pergunta 1 de X</div>
+                <div class="test-question-card" id="questionCard">
+                    <div class="test-category" id="qCategory">MOTOR</div>
+                    <div class="test-title" id="qTitle">NP</div>
+                    <div class="test-prompt" id="qPrompt">Somente MTF</div>
+                    <div class="test-input-wrapper">
+                        <input type="number" class="test-input" id="testInput" placeholder="--">
+                    </div>
+                    <div class="feedback-area" id="testFeedback"></div>
+                </div>
+                <div class="test-nav">
+                    <button class="btn" id="btnNext" onclick="handleQuestionSubmit()">Confirmar</button>
+                </div>
+                <div style="margin-top: 50px; text-align: center; margin-bottom: 40px;">
+                    <button class="btn btn-secondary" onclick="goToHome()" style="font-size: 0.7rem; border: none; opacity: 0.7;">Encerrar e Voltar</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -360,9 +478,12 @@
             <h3 id="statsTitle">Resultado</h3>
             <div id="scoreDisplay" class="score-value">0/0</div>
             <p id="feedbackText"></p>
-            <div style="margin-top: 2rem; display: flex; gap: 10px;">
-                <button class="btn btn-secondary" style="flex: 1" onclick="closeStats()">Revisar</button>
-                <button class="btn" style="flex: 1" onclick="refazer()">Refazer</button>
+            <div style="margin-top: 2rem; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn btn-secondary" style="flex: 1" onclick="closeStats()">Revisar</button>
+                    <button class="btn" style="flex: 1" onclick="refazer()">Refazer</button>
+                </div>
+                <button class="btn btn-outline" style="width: 100%" onclick="goToHome()">Voltar ao Início</button>
             </div>
         </div>
     </div>
@@ -413,7 +534,7 @@
             {
                 section: "Limitações de Motores",
                 items: [
-                    { title: "NP (Turbina de Potência)", content: `<table><tr><th>Condição</th><th>Faixa (%)</th></tr><tr><td>Somente MTF</td><td>Até <input type="number" id="lim_np_mtf"></td></tr><tr><td>12 seg transiente</td><td><input type="number" id="lim_np_12s_low"> - <input type="number" id="lim_np_12s_high"></td></tr><tr><td>Transiente</td><td><input type="number" id="lim_np_trans1_low"> - <input type="number" id="lim_np_trans1_high"></td></tr><tr><td>Contínuo</td><td><input type="number" id="lim_np_cont_low"> - <input type="number" id="lim_np_cont_high"></td></tr><tr><td>Transiente</td><td><input type="number" id="lim_np_trans2_low"> - <input type="number" id="lim_np_trans2_high"></td></tr><tr><td>Evitar (R1)</td><td><input type="number" id="lim_np_avoid1_low"> - <input type="number" id="lim_np_avoid1_high"></td></tr><tr><td>Evitar (R2)</td><td><input type="number" id="lim_np_avoid2_low"> - <input type="number" id="lim_np_avoid2_high"></td></tr></table>` },
+                    { title: "NP (Turbina de Potência)", content: `<table><tr><th>Condição</th><th>Faixa (%)</th></tr><tr><td>Somente MTF</td><td>Até <input type="number" id="lim_np_mtf"></td></tr><tr><td>12 seg transiente</td><td><input type="number" id="lim_np_12s_low"> - <input type="number" id="lim_np_12s_high"></td></tr><tr><td>Transiente</td><td><input type="number" id="lim_np_trans1_low"> - <input type="number" id="lim_np_trans1_high"></td></tr><tr><td>Contínuo</td><td><input type="number" id="lim_np_cont_low"> - <input type="number" id="lim_np_cont_high"></td></tr><tr><td>Transiente</td><td><input type="number" id="lim_np_trans2_low"> - <input type="number" id="lim_np_trans2_high"></td></tr><tr><td>Evitar</td><td><input type="number" id="lim_np_avoid1_low"> - <input type="number" id="lim_np_avoid1_high"> e <input type="number" id="lim_np_avoid2_low"> - <input type="number" id="lim_np_avoid2_high"></td></tr></table>` },
                     { title: "NG (Gerador de Gás)", content: `<table><tr><th>Condição</th><th>Faixa (%)</th></tr><tr><td>12 segundos</td><td><input type="number" id="lim_ng_12s_low" step="0.1"> - <input type="number" id="lim_ng_12s_high" step="0.1"></td></tr><tr><td>Contínuo</td><td><input type="number" id="lim_ng_cont_low" step="0.1"> - <input type="number" id="lim_ng_cont_high" step="0.1"></td></tr></table>` },
                     { title: "Torque (Q) Bimotor", content: `<table><tr><th>Condição</th><th>10 seg (%)</th><th>Cont. (%)</th></tr><tr><td>&lt; 80 KIAS</td><td><input type="number" id="lim_q_bi_low80_10s"></td><td><input type="number" id="lim_q_bi_low80_cont"></td></tr><tr><td>&gt; 80 KIAS</td><td><input type="number" id="lim_q_bi_high80_10s"></td><td><input type="number" id="lim_q_bi_high80_cont"></td></tr></table>` },
                     { title: "Torque (Q) Monomotor", content: `<table><tr><th>Condição</th><th>Valor (%)</th></tr><tr><td>Contínuo</td><td><input type="number" id="lim_q_mono_cont"></td></tr><tr><td>10 segundos</td><td><input type="number" id="lim_q_mono_10s"></td></tr></table>` },
@@ -480,8 +601,179 @@
         ];
 
         let isGabaritoVisible = false;
+        let testTopics = [];
+        let currentTestQuestions = [];
+        let currentQuestionIdx = 0;
+        let testScore = 0;
+        let isAnswered = false;
+
+        function goToHome() {
+            document.getElementById('welcomeScreen').classList.remove('hidden');
+            document.getElementById('quizContent').classList.add('hidden');
+            document.getElementById('testConfigScreen').classList.add('hidden');
+            document.getElementById('testPlayScreen').classList.add('hidden');
+            document.getElementById('footerActions').classList.add('hidden');
+            document.getElementById('btnBackHome').classList.add('hidden');
+            document.getElementById('headerProgress').classList.remove('hidden');
+            closeStats();
+        }
+
+        function showTestConfig() {
+            testTopics = [];
+            quizData.forEach(section => {
+                section.items.forEach(item => {
+                    testTopics.push({
+                        cat: section.section.replace("Limitações de ", "").toUpperCase(),
+                        title: item.title,
+                        content: item.content
+                    });
+                });
+            });
+
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('testConfigScreen').classList.remove('hidden');
+            document.getElementById('btnBackHome').classList.remove('hidden');
+            
+            const themes = [...new Set(testTopics.map(q => q.cat))];
+            const themeContainer = document.getElementById('themeSelection');
+            themeContainer.innerHTML = themes.map(t => `
+                <div class="theme-item selected" onclick="toggleTheme(this)">
+                    <input type="checkbox" checked value="${t}">
+                    <span>${t}</span>
+                </div>
+            `).join('');
+        }
+
+        function toggleTheme(el) {
+            el.classList.toggle('selected');
+            const cb = el.querySelector('input');
+            cb.checked = el.classList.contains('selected');
+        }
+
+        let allThemesSelected = true;
+        function toggleAllThemesSelector() {
+            allThemesSelected = !allThemesSelected;
+            const items = document.querySelectorAll('.theme-item');
+            const btn = document.querySelector('.select-all-btn');
+            
+            items.forEach(item => {
+                const cb = item.querySelector('input');
+                if (allThemesSelected) {
+                    item.classList.add('selected');
+                    cb.checked = true;
+                } else {
+                    item.classList.remove('selected');
+                    cb.checked = false;
+                }
+            });
+            
+            btn.innerText = allThemesSelected ? "Desmarcar Todos" : "Selecionar Todos";
+        }
+
+        function startTest() {
+            const selectedThemes = Array.from(document.querySelectorAll('#themeSelection input:checked')).map(i => i.value);
+            if (selectedThemes.length === 0) {
+                alert("Selecione pelo menos um tema!");
+                return;
+            }
+
+            let questions = testTopics.filter(q => selectedThemes.includes(q.cat));
+            
+            // Shuffle
+            questions = questions.sort(() => Math.random() - 0.5);
+
+            const countStr = document.getElementById('testQuestionCount').value;
+            const count = countStr === 'all' ? questions.length : parseInt(countStr);
+            currentTestQuestions = questions.slice(0, count);
+            
+            currentQuestionIdx = 0;
+            testScore = 0;
+            isAnswered = false;
+
+            document.getElementById('testConfigScreen').classList.add('hidden');
+            document.getElementById('testPlayScreen').classList.remove('hidden');
+            document.getElementById('headerProgress').classList.add('hidden');
+            
+            renderTestQuestion();
+        }
+
+        function renderTestQuestion() {
+            const q = currentTestQuestions[currentQuestionIdx];
+            document.getElementById('testProgress').innerText = `Tópico ${currentQuestionIdx + 1} de ${currentTestQuestions.length}`;
+            document.getElementById('qCategory').innerText = q.cat;
+            document.getElementById('qTitle').innerText = q.title;
+            document.getElementById('qPrompt').innerText = "Preencha todos os campos do tópico abaixo:";
+            
+            const card = document.getElementById('questionCard');
+            const inputWrapper = card.querySelector('.test-input-wrapper');
+            inputWrapper.innerHTML = q.content;
+            
+            // Limpa os campos injetados para o simulado
+            inputWrapper.querySelectorAll('input').forEach(input => {
+                input.value = "";
+                input.classList.remove('correct-input', 'error-input');
+            });
+
+            document.getElementById('testFeedback').innerText = "";
+            document.getElementById('btnNext').innerText = "Confirmar";
+            isAnswered = false;
+        }
+
+        function handleQuestionSubmit() {
+            if (isAnswered) {
+                currentQuestionIdx++;
+                if (currentQuestionIdx < currentTestQuestions.length) {
+                    renderTestQuestion();
+                } else {
+                    showStats("Simulado Finalizado", testScore, currentTestQuestions.length);
+                }
+                return;
+            }
+
+            const card = document.getElementById('questionCard');
+            const inputs = card.querySelectorAll('input:not([readonly])');
+            const feedback = document.getElementById('testFeedback');
+            
+            let allCorrect = true;
+
+            inputs.forEach(input => {
+                const userVal = input.value.trim();
+                const correct = answerKey[input.id];
+                
+                if (userVal == correct) {
+                    input.classList.add('correct-input');
+                    input.classList.remove('error-input');
+                } else {
+                    allCorrect = false;
+                    input.classList.add('error-input');
+                    input.classList.remove('correct-input');
+                    
+                    // Mostra o resultado correto abaixo do input se errar
+                    const span = document.createElement('span');
+                    span.className = 'gabarito-text-test';
+                    span.style.color = 'var(--primary)';
+                    span.style.fontSize = '0.7rem';
+                    span.style.display = 'block';
+                    span.innerText = `[${correct}]`;
+                    input.after(span);
+                }
+            });
+
+            if (allCorrect) {
+                testScore++;
+                feedback.innerText = "Tópico preenchido corretamente!";
+                feedback.style.color = "var(--success)";
+            } else {
+                feedback.innerHTML = `Alguns campos estão incorretos. Verifique os valores em destaque.`;
+                feedback.style.color = "var(--error)";
+            }
+
+            isAnswered = true;
+            document.getElementById('btnNext').innerText = "Próximo Tópico";
+        }
 
         function startApp() {
+            document.getElementById('btnBackHome').classList.remove('hidden');
             document.getElementById('welcomeScreen').classList.add('hidden');
             document.getElementById('quizContent').classList.remove('hidden');
             document.getElementById('footerActions').classList.remove('hidden');
