@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treino de Prova – Emergências e Limitações UH-60M</title>
+    <style>
+        :root {
+            --bg-color: #0f1113;
+            --card-bg: #1a1d21;
+            --text-color: #e0e0e0;
+            --primary: #d4af37; /* Gold/Metallic touch */
+            --muted: #888;
+            --success: #4caf50;
+            --error: #f44336;
+            --border-color: #2a2e35;
+            --input-bg: #25292e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        .header {
+            position: relative;
+            background-color: #15181c;
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .header-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .title-area h1 {
+            font-size: 1.2rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .progress-container {
+            width: 120px;
+            height: 6px;
+            background-color: #2a2e35;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--primary);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.75rem;
+            color: var(--muted);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+
+        .welcome-screen {
+            text-align: center;
+            padding: 5rem 1rem;
+        }
+
+        .welcome-screen h2 {
+            margin-bottom: 1rem;
+            color: #fff;
+            font-size: 2rem;
+            letter-spacing: 1px;
+        }
+
+        .welcome-screen p {
+            margin-bottom: 2rem;
+            color: var(--muted);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-success {
+            background-color: var(--primary); /* Keep consistent with gold theme or use success green */
+            color: #000;
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            margin: 3rem 0 1.5rem;
+            font-size: 1.2rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card-header {
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .card-body {
+            line-height: 1.8;
+            font-size: 1rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        input[type="text"], input[type="number"] {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--primary);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 70px;
+            text-align: center;
+            margin: 0 4px;
+            font-weight: bold;
+            font-family: monospace;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .correct-input {
+            border-color: var(--success) !important;
+            background-color: rgba(76, 175, 80, 0.1) !important;
+        }
+
+        .error-input {
+            border-color: var(--error) !important;
+            background-color: rgba(244, 67, 54, 0.1) !important;
+        }
+
+        .btn-section-correct {
+            display: block;
+            margin: 20px auto 40px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--primary);
+            font-size: 0.9rem;
+            padding: 8px 20px;
+        }
+        .btn-section-correct:hover {
+            background: var(--primary);
+            color: #000;
+        }
+        .gabarito-text {
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 5px;
+            display: inline-block;
+        }
+
+        .footer-actions {
+            margin-top: 40px;
+            padding: 20px 15px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-top: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+        }
+
+        .footer-actions .btn {
+            flex: 1;
+            min-width: 130px;
+            max-width: 200px;
+        }
+
+        .stats-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .stats-card {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 1px solid var(--primary);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .stats-card h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        .score-value {
+            font-size: 3.5rem;
+            font-weight: bold;
+            margin: 1.5rem 0;
+            font-family: monospace;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        td, th {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #212529;
+            color: #fff;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .instruction-box {
+            background: rgba(212, 175, 55, 0.05);
+            border: 1px solid var(--primary);
+            padding: 1.2rem;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+        .instruction-box b {
+            color: var(--primary);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 15px 20px;
+            }
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .progress-container {
+                width: 100%;
+            }
+            .progress-text {
+                align-items: flex-start;
+            }
+            .container {
+                padding: 20px;
+            }
+            .footer-actions {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .btn {
+                width: 100%;
+            }
+            body {
+                padding-top: 140px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header" id="mainHeader">
+        <div class="header-content">
+            <div class="title-area">
+                <h1>Treino UH-60M – Limitações</h1>
+            </div>
+            <div class="progress-text">
+                <span id="progressPercent">0% concluído</span>
+                <span id="progressCount">0 / 0 campos</span>
+            </div>
+            <div class="progress-container">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" id="appContainer">
+        <!-- Welcome Screen -->
+        <div id="welcomeScreen" class="welcome-screen">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary); margin-bottom: 1rem;">
+                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <path d="M12 18v-6"></path>
+                <path d="M8 15h8"></path>
+            </svg>
+            <h2>Simulado UH-60M</h2>
+            <button class="btn" onclick="startApp()">Iniciar Prova</button>
+        </div>
+
+        <!-- Quiz Content (Built dynamically) -->
+        <div id="quizContent" class="hidden">
+            <div id="sections"></div>
+        </div>
+    </div>
+
+    <div class="footer-actions hidden" id="footerActions">
+        <button class="btn btn-outline" onclick="refazer()">Refazer</button>
+        <button class="btn btn-secondary" onclick="toggleGabarito()" id="btnGabarito">Ver Gabarito</button>
+        <button class="btn btn-success" onclick="corrigir()">Corrigir Prova</button>
+    </div>
+
+    <!-- Stats Modal -->
+    <div id="statsOverlay" class="stats-overlay hidden">
+        <div class="stats-card">
+            <h3>Resultado</h3>
+            <div id="scoreDisplay" class="score-value">0/0</div>
+            <p id="feedbackText">Continue estudando!</p>
+            <div style="margin-top: 2rem; display: flex; gap: 1rem;">
+                <button class="btn btn-secondary" style="flex: 1" onclick="closeStats()">Revisar Erros</button>
+                <button class="btn" style="flex: 1" onclick="refazerStats()">Novo Teste</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gabarito baseado estritamente na imagem de limitações do UH-60M
+        const answerKey = {
+            // NP
+            "lim_np_mtf": 114,
+            "lim_np_12s_low": 105,
+            "lim_np_12s_high": 107,
+            "lim_np_trans1_low": 101,
+            "lim_np_trans1_high": 105,
+            "lim_np_cont_low": 95,
+            "lim_np_cont_high": 101,
+            "lim_np_trans2_low": 91,
+            "lim_np_trans2_high": 95,
+            "lim_np_avoid1_low": 20,
+            "lim_np_avoid1_high": 40,
+            "lim_np_avoid2_low": 60,
+            "lim_np_avoid2_high": 90,
+
+            // NG
+            "lim_ng_12s_low": 105,
+            "lim_ng_12s_high": 106,
+            "lim_ng_cont_low": 0,
+            "lim_ng_cont_high": 105,
+
+            // Q BIMOTOR
+            "lim_q_bi_low80_10s": 144,
+            "lim_q_bi_low80_cont": 120,
+            "lim_q_bi_high80_10s": 144,
+            "lim_q_bi_high80_cont": 100,
+
+            // Q MONOMOTOR
+            "lim_q_mono_cont": 135,
+            "lim_q_mono_10s": 144,
+
+            // TGT
+            "lim_tgt_12s_low": 903,
+            "lim_tgt_12s_high": 949,
+            "lim_tgt_2min_low": 879,
+            "lim_tgt_2min_high": 903,
+            "lim_tgt_10min_low": 846,
+            "lim_tgt_10min_high": 879,
+            "lim_tgt_30min_low": 793,
+            "lim_tgt_30min_high": 846,
+            "lim_tgt_cont": 793,
+            "lim_tgt_abort": 851,
+
+            // ENG OIL P
+            "lim_oil_eng_p_5min_low": 100,
+            "lim_oil_eng_p_5min_high": 120,
+            "lim_oil_eng_p_cont_low": 26,
+            "lim_oil_eng_p_cont_high": 100,
+            "lim_oil_eng_p_idle": 22,
+
+            // ENG OIL T
+            "lim_oil_eng_t_30min_low": 135,
+            "lim_oil_eng_t_30min_high": 150,
+            "lim_oil_eng_t_cont_low": -20,
+            "lim_oil_eng_t_cont_high": 135,
+
+            // XMSN OIL P
+            "lim_oil_xmsn_p_prec_low": 65,
+            "lim_oil_xmsn_p_prec_high": 130,
+            "lim_oil_xmsn_p_cont_low": 30,
+            "lim_oil_xmsn_p_cont_high": 65,
+            "lim_oil_xmsn_p_idle_low": 20,
+            "lim_oil_xmsn_p_idle_high": 30,
+            "lim_oil_xmsn_p_10deg_low": 30,
+            "lim_oil_xmsn_p_10deg_high": 35,
+            "lim_oil_xmsn_p_15deg_low": 10,
+            "lim_oil_xmsn_p_15deg_high": 15,
+
+            // XMSN OIL T
+            "lim_oil_xmsn_t_prec_low": 105,
+            "lim_oil_xmsn_t_prec_high": 140,
+            "lim_oil_xmsn_t_cont_low": -20,
+            "lim_oil_xmsn_t_cont_high": 105,
+
+            // BACKUP HYD PUMP
+            "lim_hyd_temp_cont_low": -54,
+            "lim_hyd_temp_cont_high": 32,
+            "lim_hyd_temp_r1_low": 33,
+            "lim_hyd_temp_r1_high": 38,
+            "lim_hyd_time_r1_work": 24,
+            "lim_hyd_time_r1_rest": 72,
+            "lim_hyd_temp_r2_low": 39,
+            "lim_hyd_temp_r2_high": 52,
+            "lim_hyd_time_r2_work": 16,
+            "lim_hyd_time_r2_rest": 48,
+
+            // STARTER
+            "lim_start_temp_low": 15,
+            "lim_start_p1_a": 2,
+            "lim_start_p1_rest": 3,
+            "lim_start_p1_b": 2,
+            "lim_start_temp_high_low": 15,
+            "lim_start_temp_high_high": 52,
+            "lim_start_p2": 2,
+            "lim_start_add_rest": 30,
+            "lim_start_cycle_rest": 1,
+
+            // NR POT
+            "lim_nr_pot_trans1_low": 101,
+            "lim_nr_pot_trans1_high": 107,
+            "lim_nr_pot_cont_low": 95,
+            "lim_nr_pot_cont_high": 101,
+            "lim_nr_pot_trans2_low": 91,
+            "lim_nr_pot_trans2_high": 95,
+
+            // NR AUTO
+            "lim_nr_auto_mtf": 120,
+            "lim_nr_auto_max": 110,
+            "lim_nr_auto_trans_low": 105,
+            "lim_nr_auto_trans_high": 110,
+            "lim_nr_auto_norm_low": 90,
+            "lim_nr_auto_norm_high": 105,
+
+            // APU
+            "lim_apu_on_temp": 43,
+            "lim_apu_on_time": 30,
+            "lim_apu_off_temp": 51,
+            "lim_apu_oil_hot": 30,
+
+            // BANK
+            "lim_bank_roll": 60,
+            "lim_bank_pitch": 30,
+            "lim_bank_servo": 30,
+
+            // VELOCIDADES
+            "lim_vne": 193,
+            "lim_v_farol_ext": 180,
+            "lim_v_farol_pouso_ext": 130,
+            "lim_v_farol_busca_ext": 100,
+            "lim_v_janela": 170,
+            "lim_v_porta_aberta": 145,
+            "lim_v_porta_voo": 80,
+            "lim_v_1hyd": 170,
+            "lim_v_2hyd": 150,
+            "lim_v_2hyd_imc": 140,
+            "lim_v_auto_low": 150,
+            "lim_v_auto_high": 130,
+            "lim_v_auto_dist": 110,
+            "lim_v_auto_stab": 120,
+            "lim_v_load_low": 140,
+            "lim_v_load_high": 120,
+            "lim_v_1eng": 130,
+            "lim_v_corrido": 60,
+            "lim_v_wind_rotor": 45,
+            "lim_v_wind_lat": 45,
+
+            // ESTABILIZADOR
+            "lim_stab_low40": 0,
+            "lim_stab_high40": 0,
+
+            // POUSO
+            "lim_land_tilt_up": 15,
+            "lim_land_tilt_red": 2,
+            "lim_land_tilt_wind": 5,
+            "lim_land_tilt_down": 6,
+            "lim_land_wind_tail": 15,
+            "lim_land_weight1": 16825,
+            "lim_land_sink1_flat": 540,
+            "lim_land_sink1_slope": 360,
+            "lim_land_weight2": 16825,
+            "lim_land_sink2_flat": 300,
+            "lim_land_sink2_slope": 180,
+
+            // GANCHO
+            "lim_hook_load": 9000,
+            "lim_hook_bank": 30,
+            "lim_hook_rear": 35,
+
+            // MANOBRAS E OUTROS
+            "lim_yaw_kias": 80,
+            "lim_prohib_hover_yaw": 30,
+            "lim_anti_ice_check": 27
+        };
+
+        const quizData = [
+            {
+                section: "Limitações de Motores",
+                items: [
+                    {
+                        title: "NP (Turbina de Potência)",
+                        content: `<table>
+                            <tr><th>Condição</th><th>Faixa (%)</th></tr>
+                            <tr><td>Somente durante MTF</td><td>Até <input type="number" id="lim_np_mtf"></td></tr>
+                            <tr><td>12 seg transiente</td><td><input type="number" id="lim_np_12s_low"> - <input type="number" id="lim_np_12s_high"></td></tr>
+                            <tr><td>Transiente</td><td><input type="number" id="lim_np_trans1_low"> - <input type="number" id="lim_np_trans1_high"></td></tr>
+                            <tr><td>Contínuo</td><td><input type="number" id="lim_np_cont_low"> - <input type="number" id="lim_np_cont_high"></td></tr>
+                            <tr><td>Transiente</td><td><input type="number" id="lim_np_trans2_low"> - <input type="number" id="lim_np_trans2_high"></td></tr>
+                            <tr><td>Faixa a evitar (Range 1)</td><td><input type="number" id="lim_np_avoid1_low"> - <input type="number" id="lim_np_avoid1_high"></td></tr>
+                            <tr><td>Faixa a evitar (Range 2)</td><td><input type="number" id="lim_np_avoid2_low"> - <input type="number" id="lim_np_avoid2_high"></td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "NG (Gerador de Gás)",
+                        content: `<table>
+                            <tr><th>Condição</th><th>Faixa (%)</th></tr>
+                            <tr><td>12 segundos</td><td><input type="number" id="lim_ng_12s_low" step="0.1"> - <input type="number" id="lim_ng_12s_high" step="0.1"></td></tr>
+                            <tr><td>Contínuo</td><td><input type="number" id="lim_ng_cont_low" step="0.1"> - <input type="number" id="lim_ng_cont_high" step="0.1"></td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "Torque (Q) Bimotor",
+                        content: `<table>
+                            <tr><th>Condição</th><th>10 segundos (%)</th><th>Contínuo (%)</th></tr>
+                            <tr><td>Abaixo de 80 KIAS</td><td><input type="number" id="lim_q_bi_low80_10s"></td><td><input type="number" id="lim_q_bi_low80_cont"></td></tr>
+                            <tr><td>Acima de 80 KIAS</td><td><input type="number" id="lim_q_bi_high80_10s"></td><td><input type="number" id="lim_q_bi_high80_cont"></td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "Torque (Q) Monomotor",
+                        content: `<table>
+                            <tr><th>Condição</th><th>Valor (%)</th></tr>
+                            <tr><td>Contínuo</td><td><input type="number" id="lim_q_mono_cont"></td></tr>
+                            <tr><td>10 segundos</td><td><input type="number" id="lim_q_mono_10s"></td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "TGT (Temperatura de Turbina)",
+                        content: `<table>
+                            <tr><th>Tempo / Condição</th><th>Faixa (ºC)</th></tr>
+                            <tr><td>12 seg transiente</td><td><input type="number" id="lim_tgt_12s_low"> - <input type="number" id="lim_tgt_12s_high"></td></tr>
+                            <tr><td>2.5 min</td><td><input type="number" id="lim_tgt_2min_low"> - <input type="number" id="lim_tgt_2min_high"></td></tr>
+                            <tr><td>10 min</td><td><input type="number" id="lim_tgt_10min_low"> - <input type="number" id="lim_tgt_10min_high"></td></tr>
+                            <tr><td>30 min</td><td><input type="number" id="lim_tgt_30min_low"> - <input type="number" id="lim_tgt_30min_high"></td></tr>
+                            <tr><td>Contínuo</td><td>Até <input type="number" id="lim_tgt_cont"></td></tr>
+                            <tr><td>Abortar Partida</td><td>Acima de <input type="number" id="lim_tgt_abort"></td></tr>
+                        </table>`
+                    }
+                ]
+            },
+            {
+                section: "Limitações de Óleo",
+                items: [
+                    {
+                        title: "ENG OIL P (Pressão do Óleo do Motor)",
+                        content: `<table>
+                            <tr><th>Condição</th><th>Valor (PSI)</th></tr>
+                            <tr><td>Limite de 5 min</td><td><input type="number" id="lim_oil_eng_p_5min_low"> - <input type="number" id="lim_oil_eng_p_5min_high"></td></tr>
+                            <tr><td>Contínuo</td><td><input type="number" id="lim_oil_eng_p_cont_low"> - <input type="number" id="lim_oil_eng_p_cont_high"></td></tr>
+                            <tr><td>Idle transiente</td><td>Mínimo de <input type="number" id="lim_oil_eng_p_idle"></td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "ENG OIL T (Temperatura do Óleo do Motor)",
+                        content: `<table>
+                            <tr><th>Condição</th><th>Faixa (ºC)</th></tr>
+                            <tr><td>30 min</td><td><input type="number" id="lim_oil_eng_t_30min_low"> - <input type="number" id="lim_oil_eng_t_30min_high"></td></tr>
+                            <tr><td>Contínuo</td><td><input type="number" id="lim_oil_eng_t_cont_low"> - <input type="number" id="lim_oil_eng_t_cont_high"></td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "XMSN OIL P (Pressão do Óleo da Transmissão)",
+                        content: `<table>
+                            <tr><th>Condição</th><th>Faixa (PSI)</th></tr>
+                            <tr><td>Precaução</td><td><input type="number" id="lim_oil_xmsn_p_prec_low"> - <input type="number" id="lim_oil_xmsn_p_prec_high"></td></tr>
+                            <tr><td>Contínuo</td><td><input type="number" id="lim_oil_xmsn_p_cont_low"> - <input type="number" id="lim_oil_xmsn_p_cont_high"></td></tr>
+                            <tr><td>Idle transiente</td><td><input type="number" id="lim_oil_xmsn_p_idle_low"> - <input type="number" id="lim_oil_xmsn_p_idle_high"></td></tr>
+                            <tr><td>10º cabrado</td><td><input type="number" id="lim_oil_xmsn_p_10deg_low"> - <input type="number" id="lim_oil_xmsn_p_10deg_high"></td></tr>
+                            <tr><td>15º cabrado</td><td><input type="number" id="lim_oil_xmsn_p_15deg_low"> - <input type="number" id="lim_oil_xmsn_p_15deg_high"></td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "XMSN OIL T (Temperatura do Óleo da Transmissão)",
+                        content: `<table>
+                            <tr><th>Condição</th><th>Faixa (ºC)</th></tr>
+                            <tr><td>Precaução</td><td><input type="number" id="lim_oil_xmsn_t_prec_low"> - <input type="number" id="lim_oil_xmsn_t_prec_high"></td></tr>
+                            <tr><td>Contínuo</td><td><input type="number" id="lim_oil_xmsn_t_cont_low"> - <input type="number" id="lim_oil_xmsn_t_cont_high"></td></tr>
+                        </table>`
+                    }
+                ]
+            },
+            {
+                section: "Hidráulica e Backup",
+                items: [
+                    {
+                        title: "BACKUP HYD PUMP",
+                        content: `<table>
+                            <tr><th>Temperatura (ºC)</th><th>Tempo de Operação / Resfriamento</th></tr>
+                            <tr><td><input type="number" id="lim_hyd_temp_cont_low"> a <input type="number" id="lim_hyd_temp_cont_high"> (Contínuo)</td><td>Sem limite</td></tr>
+                            <tr><td><input type="number" id="lim_hyd_temp_r1_low"> a <input type="number" id="lim_hyd_temp_r1_high"></td><td><input type="number" id="lim_hyd_time_r1_work"> min / <input type="number" id="lim_hyd_time_r1_rest"> min</td></tr>
+                            <tr><td><input type="number" id="lim_hyd_temp_r2_low"> a <input type="number" id="lim_hyd_temp_r2_high"></td><td><input type="number" id="lim_hyd_time_r2_work"> min / <input type="number" id="lim_hyd_time_r2_rest"> min</td></tr>
+                        </table>`
+                    }
+                ]
+            },
+            {
+                section: "Mecânica de Voo",
+                items: [
+                    {
+                        title: "STARTER",
+                        content: `<table>
+                            <tr><th>Temperatura Ambiente</th><th>Ciclo</th></tr>
+                            <tr><td>&le; <input type="number" id="lim_start_temp_low"> ºC</td><td><input type="number" id="lim_start_p1_a"> Partidas, <input type="number" id="lim_start_p1_rest"> min descanso, <input type="number" id="lim_start_p1_b"> Partidas</td></tr>
+                            <tr><td>> <input type="number" id="lim_start_temp_high_low"> a <input type="number" id="lim_start_temp_high_high"> ºC</td><td><input type="number" id="lim_start_p2"> Partidas</td></tr>
+                            <tr><td>Partidas Adicionais</td><td><input type="number" id="lim_start_add_rest"> min descanso</td></tr>
+                            <tr><td>Intervalo entre ciclos</td><td><input type="number" id="lim_start_cycle_rest"> minutos</td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "APU",
+                        content: `<table>
+                            <tr><th>Condição</th><th>Tempo Máximo</th></tr>
+                            <tr><td>&ge; <input type="number" id="lim_apu_on_temp"> ºC (Rotor e motor ligados)</td><td><input type="number" id="lim_apu_on_time"> min</td></tr>
+                            <tr><td>&le; <input type="number" id="lim_apu_off_temp"> ºC (Rotor e motor desligados)</td><td>Sem limite</td></tr>
+                            <tr><td>APU OIL HOT acesa</td><td><input type="number" id="lim_apu_oil_hot"> min</td></tr>
+                        </table>`
+                    }
+                ]
+            },
+            {
+                section: "Limites de Rotor e Bank",
+                items: [
+                    {
+                        title: "NR COM POTÊNCIA",
+                        content: `<table>
+                            <tr><th>Faixa</th><th>Valor (%)</th></tr>
+                            <tr><td>Transiente</td><td><input type="number" id="lim_nr_pot_trans1_low"> - <input type="number" id="lim_nr_pot_trans1_high"></td></tr>
+                            <tr><td>Contínuo</td><td><input type="number" id="lim_nr_pot_cont_low"> - <input type="number" id="lim_nr_pot_cont_high"></td></tr>
+                            <tr><td>Transiente</td><td><input type="number" id="lim_nr_pot_trans2_low"> - <input type="number" id="lim_nr_pot_trans2_high"></td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "NR SEM POTÊNCIA (AUTORROTAÇÃO)",
+                        content: `<table>
+                            <tr><th>Faixa</th><th>Valor (%)</th></tr>
+                            <tr><td>120%</td><td>Somente durante <input type="text" id="lim_nr_auto_mtf_txt" value="MTF" readonly style="width: 40px; background: transparent; border: none; color: var(--primary);"></td></tr>
+                            <tr><td>Máximo</td><td><input type="number" id="lim_nr_auto_max"></td></tr>
+                            <tr><td>Transiente</td><td><input type="number" id="lim_nr_auto_trans_low"> - <input type="number" id="lim_nr_auto_trans_high"></td></tr>
+                            <tr><td>Normal</td><td><input type="number" id="lim_nr_auto_norm_low"> - <input type="number" id="lim_nr_auto_norm_high"></td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "LIMITES DE BANK",
+                        content: `<table>
+                            <tr><td>Máx Roll</td><td><input type="number" id="lim_bank_roll"> º</td></tr>
+                            <tr><td>Máx Pitch</td><td><input type="number" id="lim_bank_pitch"> º</td></tr>
+                            <tr><td>PRI SERVO PRESS acesa</td><td><input type="number" id="lim_bank_servo"> º bank</td></tr>
+                        </table>`
+                    }
+                ]
+            },
+            {
+                section: "Velocidades Máximas",
+                items: [
+                    {
+                        title: "VELOCIDADES MÁXIMAS",
+                        content: `<table>
+                            <tr><td>VNE</td><td><input type="number" id="lim_vne"> KIAS</td></tr>
+                            <tr><td>Farol extendido (pouso ou busca)</td><td><input type="number" id="lim_v_farol_ext"> KIAS</td></tr>
+                            <tr><td>Estender farol de pouso</td><td><input type="number" id="lim_v_farol_pouso_ext"> KIAS</td></tr>
+                            <tr><td>Estender farol de busca</td><td><input type="number" id="lim_v_farol_busca_ext"> KIAS</td></tr>
+                            <tr><td>Janela do MV aberta</td><td><input type="number" id="lim_v_janela"> KIAS</td></tr>
+                            <tr><td>A porta da cabine deve estar totalmente aberta</td><td><input type="number" id="lim_v_porta_aberta"> KIAS</td></tr>
+                            <tr><td>Abertura da porta da cabine em voo</td><td><input type="number" id="lim_v_porta_voo"> KIAS</td></tr>
+                            <tr><td>1 HYD Inop. ou 1 SAS Inop.</td><td><input type="number" id="lim_v_1hyd"> KIAS</td></tr>
+                            <tr><td>2 HYD Inop. ou 2 SAS Inop.</td><td><input type="number" id="lim_v_2hyd"> KIAS</td></tr>
+                            <tr><td>2 HYD Inop. ou 2 SAS Inop. (IMC)</td><td><input type="number" id="lim_v_2hyd_imc"> KIAS</td></tr>
+                            <tr><td>Autorrotação com peso de até 16825 libras</td><td><input type="number" id="lim_v_auto_low"> KIAS</td></tr>
+                            <tr><td>Autorrotação com peso maior ou igual a 16825 libras</td><td><input type="number" id="lim_v_auto_high"> KIAS</td></tr>
+                            <tr><td>Distância máx. em autorrotação (Clean)</td><td><input type="number" id="lim_v_auto_dist"> KIAS</td></tr>
+                            <tr><td>Autorrotação com peso maior ou igual a 16825 libras</td><td><input type="number" id="lim_v_auto_high"> KIAS</td></tr>
+                            <tr><td>Distância máx. em autorrotação (Clean)</td><td><input type="number" id="lim_v_auto_dist"> KIAS</td></tr>
+                            <tr><td>Autorrotação com pane no STAB</td><td><input type="number" id="lim_v_auto_stab"> KIAS</td></tr>
+                            <tr><td>Carga externa até 8000 libras</td><td><input type="number" id="lim_v_load_low"> KIAS</td></tr>
+                            <tr><td>Carga externa maior que 8000 libras e peso máximo maior que 22000 libras.</td><td><input type="number" id="lim_v_load_high"> KIAS</td></tr>
+                            <tr><td>1 Eng inoperante</td><td><input type="number" id="lim_v_1eng"> KIAS</td></tr>
+                            <tr><td>Pouso corrido</td><td><input type="number" id="lim_v_corrido"> KTS</td></tr>
+                            <tr><td>Vento máx. para cionamento e corte do rotor em qualquer direção</td><td><input type="number" id="lim_v_wind_rotor"> KTS</td></tr>
+                            <tr><td>Vento máx. lateral ou retaguarda para pairado / deslocamento lateral ou para trás (Anv + Vento)</td><td><input type="number" id="lim_v_wind_lat"> KTS</td></tr>
+                        </table>`
+                    }
+                ]
+            },
+            {
+                section: "Manobras e Equipamentos",
+                items: [
+                    {
+                        title: "ESTABILIZADOR MODO MANUAL",
+                        content: `<table>
+                            <tr><td>Abaixo de 40 KIAS</td><td><input type="number" id="lim_stab_low40"> º</td></tr>
+                            <tr><td>Acima de 40 KIAS</td><td><input type="number" id="lim_stab_high40"> º</td></tr>
+                            <tr><td>Controle manual indisponível</td><td>Arco VNE no velocímetro</td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "GANCHO",
+                        content: `<table>
+                            <tr><td>Carga máxima</td><td><input type="number" id="lim_hook_load"> libras</td></tr>
+                            <tr><td>Bank máximo</td><td><input type="number" id="lim_hook_bank"> º</td></tr>
+                            <tr><td>Voo à retaguarda</td><td><input type="number" id="lim_hook_rear"> KT</td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "PRESSÃO MÁX ABASTECIMENTO",
+                        content: `<p>300 Galões por minuto a 55 PSI</p>`
+                    },
+                    {
+                        title: "WINDSHIELD ANTI-ICE",
+                        content: `<p><input type="number" id="lim_anti_ice_check"> ºC - Temp. máxima para realização do check</p>`
+                    }
+                ]
+            },
+            {
+                section: "Limitações de Pouso",
+                items: [
+                    {
+                        title: "LIMITAÇÕES DE INCLINAÇÃO E VENTO",
+                        content: `<table>
+                            <tr><td>Nariz para cima, esquerda ou direita</td><td><input type="number" id="lim_land_tilt_up"> º (reduzir <input type="number" id="lim_land_tilt_red"> º para cada <input type="number" id="lim_land_tilt_wind"> KT de vento)</td></tr>
+                            <tr><td>Nariz para baixo</td><td><input type="number" id="lim_land_tilt_down"> º de inclinação</td></tr>
+                            <tr><td>Vento de cauda máximo com nariz para baixo</td><td><input type="number" id="lim_land_wind_tail"> KT</td></tr>
+                        </table>`
+                    },
+                    {
+                        title: "LIMITES DE PESO E RAZÃO DE DESCIDA",
+                        content: `<table>
+                            <tr><th>Peso</th><th>Terreno</th><th>Razão (ft/min)</th></tr>
+                            <tr><td rowspan="2">Até <input type="number" id="lim_land_weight1"> libras</td><td>Nivelado</td><td><input type="number" id="lim_land_sink1_flat"></td></tr>
+                            <tr><td>Inclinado</td><td><input type="number" id="lim_land_sink1_slope"></td></tr>
+                            <tr><td rowspan="2">Peso maior que <input type="number" id="lim_land_weight2"> libras</td><td>Nivelado</td><td><input type="number" id="lim_land_sink2_flat"></td></tr>
+                            <tr><td>Inclinado</td><td><input type="number" id="lim_land_sink2_slope"></td></tr>
+                        </table>`
+                    }
+                ]
+            },
+            {
+                section: "Manobras",
+                items: [
+                    {
+                        title: "MANOBRAS E YAW",
+                        content: `<table>
+                            <tr><td>Mudanças de proa no pairado maior que <input type="number" id="lim_prohib_hover_yaw"> º/s são proibidas</td></tr>
+                            <tr><td>Yaw em alta velocidade (> <input type="number" id="lim_yaw_kias"> KIAS): Evite manobras abruptas aplicando todo o pedal</td></tr>
+                            <tr><td>Táxi à retaguarda é Proibido</td></tr>
+                        </table>`
+                    }
+                ]
+            }
+        ];
+
+        let showGabarito = false;
+
+        function startApp() {
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('quizContent').classList.remove('hidden');
+            document.getElementById('footerActions').classList.remove('hidden');
+            renderQuiz();
+            loadProgress();
+            updateProgressCounters();
+        }
+
+        function renderQuiz() {
+            const container = document.getElementById('sections');
+            container.innerHTML = '';
+
+            quizData.forEach((item, index) => {
+                const sectionEl = document.createElement('div');
+                sectionEl.id = `section-${index}`;
+                sectionEl.innerHTML = `<h2 class="section-title">${item.section}</h2>`;
+                
+                item.items.forEach(q => {
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.innerHTML = `
+                        <div class="card-header">${q.title}</div>
+                        <div class="card-body">${q.content}</div>
+                    `;
+                    sectionEl.appendChild(card);
+                });
+
+                // Botão corrigir seção
+                const btnSecao = document.createElement('button');
+                btnSecao.className = 'btn btn-section-correct';
+                btnSecao.textContent = `Corrigir ${item.section}`;
+                btnSecao.onclick = () => corrigirSecao(index);
+                sectionEl.appendChild(btnSecao);
+                
+                container.appendChild(sectionEl);
+            });
+
+            // Adicionar listeners para salvar automaticamente
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    saveProgress();
+                    updateProgressCounters();
+                });
+            });
+        }
+
+        function updateProgressCounters() {
+            const inputs = document.querySelectorAll('input');
+            const total = inputs.length;
+            const filled = Array.from(inputs).filter(i => i.value !== '').length;
+            const percent = Math.round((filled / total) * 100);
+
+            document.getElementById('progressPercent').textContent = `${percent}% concluído`;
+            document.getElementById('progressCount').textContent = `${filled} / ${total} campos`;
+            document.getElementById('progressBar').style.width = `${percent}%`;
+        }
+
+        function saveProgress() {
+            const inputs = document.querySelectorAll('input');
+            const data = {};
+            inputs.forEach(input => {
+                data[input.id] = input.value;
+            });
+            localStorage.setItem('uh60m_training_data', JSON.stringify(data));
+        }
+
+        function loadProgress() {
+            const saved = localStorage.getItem('uh60m_training_data');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = data[id];
+                });
+            }
+        }
+
+        function refazer() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.value = '';
+                input.classList.remove('correct-input', 'error-input');
+            });
+            localStorage.removeItem('uh60m_training_data');
+            
+            // Limpar gabaritos visiveis
+            document.querySelectorAll('.gabarito-text').forEach(el => el.remove());
+            showGabarito = false;
+            if (document.getElementById('btnGabarito')) {
+                document.getElementById('btnGabarito').textContent = "Ver Gabarito";
+            }
+            
+            updateProgressCounters();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleGabarito() {
+            showGabarito = !showGabarito;
+            document.getElementById('btnGabarito').textContent = showGabarito ? "Ocultar Gabarito" : "Ver Gabarito";
+            
+            if (showGabarito) {
+                Object.keys(answerKey).forEach(id => {
+                    const input = document.getElementById(id);
+                    if (input && !input.nextElementSibling?.classList.contains('gabarito-text')) {
+                        const span = document.createElement('span');
+                        span.className = 'gabarito-text';
+                        span.textContent = `[G: ${answerKey[id]}]`;
+                        input.parentNode.insertBefore(span, input.nextSibling);
+                    }
+                });
+            } else {
+                document.querySelectorAll('.gabarito-text').forEach(el => el.remove());
+            }
+        }
+
+        function corrigirSecao(sectionIndex) {
+            const section = document.getElementById(`section-${sectionIndex}`);
+            const inputs = Array.from(section.querySelectorAll('input')).filter(i => answerKey.hasOwnProperty(i.id));
+            let acertos = 0;
+            let respondidas = 0;
+            const total = inputs.length;
+
+            inputs.forEach(input => {
+                if (input.value !== '') respondidas++;
+                
+                const userVal = parseFloat(input.value);
+                const correctVal = answerKey[input.id];
+
+                input.classList.remove('correct-input', 'error-input');
+
+                if (userVal === correctVal) {
+                    input.classList.add('correct-input');
+                    acertos++;
+                } else if (input.value !== '') {
+                    input.classList.add('error-input');
+                }
+            });
+
+            const percent = respondidas > 0 ? Math.round((acertos / respondidas) * 100) : 0;
+            showStats(acertos, respondidas, percent, total, quizData[sectionIndex].section);
+        }
+
+        function corrigir() {
+            const inputs = Array.from(document.querySelectorAll('input')).filter(i => answerKey.hasOwnProperty(i.id));
+            let acertos = 0;
+            let respondidas = 0;
+            const total = inputs.length;
+
+            inputs.forEach(input => {
+                if (input.value !== '') respondidas++;
+
+                const userVal = parseFloat(input.value);
+                const correctVal = answerKey[input.id];
+
+                input.classList.remove('correct-input', 'error-input');
+
+                if (userVal === correctVal) {
+                    input.classList.add('correct-input');
+                    acertos++;
+                } else if (input.value !== '') {
+                    input.classList.add('error-input');
+                }
+            });
+
+            const percent = respondidas > 0 ? Math.round((acertos / respondidas) * 100) : 0;
+            showStats(acertos, respondidas, percent, total, "Geral");
+        }
+
+        function showStats(acertos, respondidas, percent, total, sectionName = "Geral") {
+            const overlay = document.getElementById('statsOverlay');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const feedbackText = document.getElementById('feedbackText');
+            const modalTitle = overlay.querySelector('h3');
+
+            overlay.classList.remove('hidden');
+            modalTitle.textContent = sectionName === "Geral" ? "Resultado Geral" : `Resultado: ${sectionName}`;
+            scoreDisplay.innerHTML = `<span style="font-size: 1.5rem">${acertos} acertos</span><br><span style="font-size: 1rem; color: var(--muted)">de ${respondidas} respondidas</span><br><span style="font-size: 0.8rem">(${total} campos totais na ${sectionName === "Geral" ? 'prova' : 'seção'})</span>`;
+            scoreDisplay.style.color = percent >= 80 ? 'var(--success)' : (percent >= 50 ? 'var(--primary)' : 'var(--error)');
+            
+            if (percent === 100 && (respondidas === total || sectionName !== "Geral")) feedbackText.textContent = "Excelente! Você dominou o conteúdo desta parte.";
+            else if (percent === 100) feedbackText.textContent = "Perfeito naquilo que respondeu! Complete o restante.";
+            else if (percent >= 80) feedbackText.textContent = "Muito bom! Falta pouco para a perfeição.";
+            else if (percent >= 50) feedbackText.textContent = "Bom esforço, mas continue revisando.";
+            else feedbackText.textContent = "Atenção necessária. Estude mais o manual.";
+        }
+
+        function closeStats() {
+            document.getElementById('statsOverlay').classList.add('hidden');
+        }
+
+        function refazerStats() {
+            closeStats();
+            refazer();
+        }
+
+        // Bloquear letras e permitir apenas números/decimais
+        document.addEventListener('keypress', function(e) {
+            if (e.target.tagName === 'INPUT' && e.target.type === 'number') {
+                const charCode = (e.which) ? e.which : e.keyCode;
+                if (charCode > 31 && (charCode < 45 || charCode > 57) && charCode !== 46) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
